@@ -11,9 +11,9 @@ import {
 	writeFileSync,
 } from "node:fs";
 import { parseArgs } from "node:util";
-import { defaultModel, openAICompatible, runAgent } from "./agent";
-import { runBaseline } from "./baseline";
-import { scoreFields } from "./score";
+import { defaultModel, openAICompatible, runAgent } from "./agent.ts";
+import { runBaseline } from "./baseline.ts";
+import { scoreFields } from "./score.ts";
 
 const SETS: Record<string, string> = {
 	dev: "samples",

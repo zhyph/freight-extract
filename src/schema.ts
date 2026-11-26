@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { convertCurrency, findPortByCode } from "./tools";
+import { convertCurrency, findPortByCode } from "./tools.ts";
 
 const ISO_CURRENCIES = new Set(Intl.supportedValuesOf("currency"));
 

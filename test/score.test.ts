@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { parseDate, parseNumber, parseWeightKg } from "../src/baseline";
-import { scoreFields } from "../src/score";
+import { parseDate, parseNumber, parseWeightKg } from "../src/baseline.ts";
+import { scoreFields } from "../src/score.ts";
 
 describe("scoreFields", () => {
 	it("scores names by substring, numbers within 1%, nulls exactly", () => {

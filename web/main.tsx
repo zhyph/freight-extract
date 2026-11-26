@@ -1,6 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { App } from "./App";
+import { App } from "./App.tsx";
 import "./styles.css";
 
 // biome-ignore lint/style/noNonNullAssertion: #root is in index.html

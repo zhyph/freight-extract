@@ -6,13 +6,13 @@ import type {
 	ChatCompletionTool,
 } from "openai/resources/chat/completions";
 import { type ZodType, z } from "zod";
-import { DocumentType, Extraction } from "./schema";
+import { DocumentType, Extraction } from "./schema.ts";
 import {
 	ConvertCurrencyInput,
 	convertCurrency,
 	LookupPortInput,
 	lookupPort,
-} from "./tools";
+} from "./tools.ts";
 
 export type CompleteParams = Pick<
 	ChatCompletionCreateParamsNonStreaming,

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import portRows from "./data/ports.json";
+import portRows from "./data/ports.json" with { type: "json" };
 
 type Port = { code: string; name: string; country: string; aliases: string[] };
 

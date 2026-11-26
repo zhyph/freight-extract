@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { AgentResult, Step, ToolCallTrace } from "../src/agent";
+import type { AgentResult, Step, ToolCallTrace } from "../src/agent.ts";
 
 type Recording = {
 	id: string;

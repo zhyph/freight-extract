@@ -20,11 +20,11 @@ Turns messy freight documents (invoices, booking confirmations, OCR'd bills of l
 
 `qwen3.5:4b` (16k context, 3.6 GB VRAM) on an RTX 4060 Ti, scored field by field against hand-labelled JSON:
 
-| Set | Agent | NuExtract baseline |
-|---|---|---|
-| Dev: 5 synthetic docs, written with the prompt | 96.8% (60/62), 5/5 valid, 44 s/doc | 87.1% (54/62), 3 s/doc |
+| Set                                                          | Agent                                    | NuExtract baseline          |
+| ------------------------------------------------------------ | ---------------------------------------- | --------------------------- |
+| Dev: 5 synthetic docs, written with the prompt               | 96.8% (60/62), 5/5 valid, 44 s/doc       | 87.1% (54/62), 3 s/doc      |
 | **Held-out: 10 real docs, first run with the prompt frozen** | **67.9% (72/106), 7/10 valid, 42 s/doc** | **66.0% (70/106), 3 s/doc** |
-| Held-out, after fixing what that run exposed | 80.2% (85/106), 10/10 valid, 42 s/doc | (unchanged) |
+| Held-out, after fixing what that run exposed                 | 80.2% (85/106), 10/10 valid, 42 s/doc    | (unchanged)                 |
 
 How to read this:
 
@@ -33,7 +33,7 @@ How to read this:
 - **Two bugs caused all three invalid outputs on that first run.** Neither was reading ability:
   - On two documents the model looped on `lookup_port` for an inland place (an inland container depot in Bangalore, and Durango in Mexico) until it ran out of turns.
   - On one document it double-quoted a correct date. Validation only said "Invalid ISO date", so it resubmitted the same value three times.
-  Both are fixed (the lookup budget and errors that echo the value). The third row is no longer a held-out score: the fixes were found by looking at those documents.
+    Both are fixed (the lookup budget and errors that echo the value). The third row is no longer a held-out score: the fixes were found by looking at those documents.
 - **The baseline** is the alternative design: one pass of [NuExtract](https://ollama.com/library/nuextract) (a 3.8B model tuned for extraction), then plain code for port lookup, unit, date and currency conversion (`src/baseline.ts`). On real documents it matches the agent's first run at about a fifteenth of the latency. After the fixes, the agent leads by 14 points, but on documents it has already seen. Whether that is worth 15x the time can only be settled on fresh documents.
 - **Remaining errors** are mostly OCR-damaged names, confusing a delivery order with a bill of lading, date arithmetic (transit days), and US dates read as DD/MM.
 - **A data finding:** in the current UN/LOCODE list, CNSHA is Shanghai Hongqiao airport and the port is CNSGH, though freight documents still write CNSHA.

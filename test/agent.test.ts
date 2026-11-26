@@ -3,8 +3,8 @@ import type {
 	ChatCompletionMessageParam,
 } from "openai/resources/chat/completions";
 import { describe, expect, it } from "vitest";
-import { type Complete, runAgent } from "../src/agent";
-import type { Extraction } from "../src/schema";
+import { type Complete, runAgent } from "../src/agent.ts";
+import type { Extraction } from "../src/schema.ts";
 
 const valid: Extraction = {
 	documentType: "invoice",

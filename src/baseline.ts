@@ -1,7 +1,7 @@
 // Baseline for the eval: one pass of NuExtract (an extraction-tuned 3.8B model),
 // then plain code for what the agent does with tools: port codes, units, dates, USD.
 // Answers "is the agent loop worth its extra turns?"
-import { convertCurrency, lookupPort } from "./tools";
+import { convertCurrency, lookupPort } from "./tools.ts";
 
 const TEMPLATE = {
 	Shipper: { Name: "" },

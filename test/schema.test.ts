@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { Extraction } from "../src/schema";
-import { convertCurrency, lookupPort } from "../src/tools";
+import { Extraction } from "../src/schema.ts";
+import { convertCurrency, lookupPort } from "../src/tools.ts";
 
 const base = {
 	documentType: "quote",
