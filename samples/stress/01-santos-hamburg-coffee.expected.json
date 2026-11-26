@@ -1,0 +1,12 @@
+{
+	"documentType": "invoice",
+	"shipper": { "name": "Cerrado Café Exportadora" },
+	"consignee": { "name": "Hanseatic Roastery" },
+	"portOfLoading": { "code": "BRSSZ" },
+	"portOfDischarge": { "code": "DEHAM" },
+	"departureDate": "2026-03-19",
+	"arrivalDate": "2026-04-16",
+	"cargo": { "packages": 1260, "grossWeightKg": 27385, "netWeightKg": 25200 },
+	"total": { "amount": 1385.0, "currency": "EUR" },
+	"totalUsd": 1509.65
+}

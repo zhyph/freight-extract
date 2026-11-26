@@ -1,0 +1,100 @@
+From: Lucas Ferreira <lucas.ferreira@andina-logistik.example>
+To: Ingrid Vossberg <i.vossberg@hanseatic-roastery.example>
+Cc: Dimitri Haas <dhaas@zephyr-coffee.example>, bookings@meridian-lines.example
+Date: Sat, 14 Mar 2026 09:12
+Subject: RE: RE: FW: BKG-44718 / final invoice + ETD change (READ THE CORRECTION)
+
+Hi Ingrid,
+
+Sorry for the chain. Please use the numbers below and ignore the older ones quoted underneath.
+
+CORRECTION - use these, NOT my mail of 11/03:
+  * POL = SANTOS (BRSSZ). Paranagua was wrong. Uberlandia ICD is place of receipt only (inland), not a port.
+  * POD = HAMBURG (DEHAM). Bremerhaven is OUT. Transshipment at Algeciras (ESALG) stays as before.
+  * Consignee legal name is Hanseatic Roastery GmbH. The "Roasters" version is an old trade name, do not use it.
+  * Packages: 1.260 bags, 20 kg net each. Net 25,2 t. Gross 27.385 kg (warehouse already confirmed).
+  * Grand total is EUR 1.385,00. The USD and BRL lines are billed by Meridian directly and are NOT in that total.
+
+Sailing: ETD now Thursday 19/03/2026 (was 12/03, vessel delayed). Transit is 28 days per Meridian schedule v3,
+so arrival = ETD + 28 days. Do not use the 31 day transit from the old schedule.
+
+The VGM sent by Cerrado is 27.910 kg. That is the VGM (incl. pallets), NOT the gross cargo weight. Don't mix them up.
+
+Can you confirm by Tuesday 17/03? Dimitri asked whether we can still load next Tuesday. Answer is no.
+
+Obrigado,
+Lucas Ferreira | Operations Lead, Coordenacao de Exportacao
+Andina Logistik S.A. | Rua do Porto 1210, Sao Paulo - SP
+Tel +55 11 3344-0981 | cel +55 11 98812-4470
+www.andina-logistik.example
+
+Aviso / Disclaimer: This e-mail and any attachments are confidential and intended only for the addressee. If you are
+not the intended recipient, notify the sender and delete it. Esta mensagem e confidencial. Diese E-Mail ist vertraulich
+und nur fuer den Empfaenger bestimmt. Andina Logistik is not liable for views expressed in this message.
+
+-----Original Message-----
+From: Dimitri Haas [mailto:dhaas@zephyr-coffee.example]
+Sent: Monday, 9 March 2026 16:05
+To: Lucas Ferreira
+Subject: Re: BKG-44718 notify party
+
+> Lucas, our notify party stays Zephyr Coffee Imports LLC (Miami) for the BL.
+> Consignee should read Hanseatic Roasters GmbH, Hamburg, per the LC.
+> Can we load next Tuesday (10/03)?
+> Dimitri
+> --
+> Zephyr Coffee Imports LLC | 1450 Brickell Ave, Miami FL
+
+On Wed, 11 Mar 2026 at 17:40, Lucas Ferreira wrote:
+> Ingrid, earlier figures for reference (ALL SUPERSEDED):
+> POL: Paranagua (BRPNG)    POD: Bremerhaven (DEBRV)
+> ETD 12/03/2026   ETA 15-Apr-26   transit 31 days
+> Packages 1.200 bags, net 25.200 kg, gross 60.380 lb
+> Total EUR 1.410,00 (CN-0457 not yet applied)
+>
+> >> Cerrado (forwarded, pt): favor confirmar, o embarque e 100% cafe verde, 1.260 sacas.
+> >> Cerrado Cafe Exportadora Ltda, CNPJ 00.000.000/0001-00
+> >> Obs: peso liquido por saca 20 kg; tara do pallet nao incluida.
+
+--------------------------------------------------------------------------------
+ATTACHMENT: ANF-2026-0318_freight_invoice.pdf (pasted text, scanned copy partly OCR'd)
+
+ANDINA LOGISTIK S.A.  -  FREIGHT INVOICE / FATURA DE FRETE
+Invoice no.: ANF-2026-0318        Date: 04/03/2026  (DD/MM/YYYY)
+Booking ref: BKG-44718            Carrier: Meridian Lines (B/L issued by carrier)
+
+Shipper:      Cerrado Café Exportadora Ltda, Uberlandia - MG, Brazil
+Consignee:    Hanseatic Roastery GmbH, Hamburg, Germany
+Notify:       Zephyr Coffee Imports LLC, Miami FL, USA
+Place of receipt:      Uberlandia ICD (inland)
+Port of loading:       SANTOS (BRSSZ)
+Transshipment:         Algeciras (ESALG)
+Port of discharge:     HAMBURG (DEHAM)
+Final destination:     Munich, DE (inland, on-carriage by road)
+ETD (corrected): 19-Mar-26      Transit: 28 days (sched v3)
+
+CARGO (scan, OCR):
+ DESCRIPTION: GREEN C0FFEE BEANS, SUN DRIED, CROP 2025/26
+ PACKAGES:    I.26O  BAGS (JUTE, 20 KG NET EACH)
+ NET WGT:     25.2OO,OO KG   (25,2 T)
+ GR0SS WGT:   27.38S KG
+ V G M (shipper declared, incl. pallets): 27.91O KG
+ MARKS: CCE/HAM/0318   C/NO 1-1260
+
+CHARGES                               CCY      AMOUNT    NOTE
+Ocean freight BRSSZ-DEHAM             USD      2.850,00  Meridian bills direct
+BAF (bunker adj.)                     USD        310,00  Meridian bills direct
+THC Santos (origin, Meridian)         BRL      1.420,00  Meridian bills direct
+Documentation fee                     EUR         85,00
+Customs clearance DEHAM               EUR        240,00
+   (ref 4 0 1 9)
+Terminal handling DEHAM               EUR      1.180,00
+                                                -------
+EUR subtotal                          EUR      1.505,00
+Credit note CN-0457 (early booking)   EUR       -120,00
+GRAND TOTAL (EUR lines only)          EUR      1.385,00
+Subtotal USD (NOT payable to Andina): USD      3.160,00
+
+Payment: net 30 days. Please pay the EUR grand total to Andina Logistik by 15/04/2026.
+Mit freundlichen Gruessen / Atenciosamente, Accounts Receivable
+Page 2 of 3

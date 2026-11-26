@@ -18,6 +18,7 @@ import { scoreFields } from "./score.ts";
 const SETS: Record<string, string> = {
 	dev: "samples",
 	holdout: "samples/holdout",
+	stress: "samples/stress",
 };
 const { values, positionals } = parseArgs({
 	options: {
@@ -78,10 +79,16 @@ for (const { name: set, dir } of sets) {
 			if (result.ok) valid++;
 			line = `${result.ok ? "valid  " : "INVALID"} ${result.steps.length} turns, ${result.validationFailures} retries, ${(result.totalMs / 1000).toFixed(1)}s${result.error ? ` (${result.error})` : ""}`;
 		} else {
-			const result = await runBaseline(input);
-			data = result.data;
-			seconds += result.totalMs / 1000;
-			line = `${(result.totalMs / 1000).toFixed(1)}s`;
+			// A model crash scores as an empty extraction instead of ending the run.
+			try {
+				const result = await runBaseline(input);
+				data = result.data;
+				seconds += result.totalMs / 1000;
+				line = `${(result.totalMs / 1000).toFixed(1)}s`;
+			} catch (e) {
+				data = null;
+				line = `CRASHED (${(e as Error).message.slice(0, 120)})`;
+			}
 		}
 		const score = scoreFields(expected, data);
 		hit += score.hit;
