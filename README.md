@@ -1,5 +1,7 @@
 # Freight Extract
 
+**[Live demo](https://zhyph.github.io/freight-extract/)**: replays of recorded agent runs, including four real documents. It runs in the browser and calls no model.
+
 Turns messy freight documents (invoices, booking confirmations, OCR'd bills of lading, email threads, quotes in Portuguese and Spanish) into validated JSON. It uses a small local LLM in a two-stage pipeline.
 
 1. **Classify** (`src/agent.ts`): one call with thinking off and JSON-schema output picks the document type. That choice routes type-specific guidance into stage 2, for example "a bill of lading's shipped-on-board date is the departure".
