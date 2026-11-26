@@ -236,7 +236,7 @@ textarea,
 }
 textarea {
 	border-color: var(--control-border);
-	resize: vertical;
+	resize: none;
 }
 .json-box {
 	padding: 0;
