@@ -214,8 +214,11 @@ select {
 .pane {
 	min-width: 0;
 }
+.panes {
+	--pane-h: clamp(280px, 52vh, 480px);
+}
 textarea,
-.json {
+.json-box {
 	display: block;
 	width: 100%;
 	margin: 0;
@@ -227,15 +230,31 @@ textarea,
 	line-height: 1.55;
 	overflow: auto;
 }
+textarea,
+.json-box {
+	height: var(--pane-h);
+}
 textarea {
-	height: clamp(280px, 52vh, 480px);
 	border-color: var(--control-border);
 	resize: vertical;
 }
+.json-box {
+	padding: 0;
+	margin-bottom: 12px;
+}
+/* No wrapping: wrapped JSON loses its indentation. Long lines scroll inside the box. */
 .json {
-	max-height: clamp(220px, 44vh, 400px);
-	white-space: pre-wrap;
-	overflow-wrap: anywhere;
+	margin: 0;
+	padding: 12px;
+	min-height: 100%;
+	width: max-content;
+	min-width: 100%;
+	white-space: pre;
+	line-height: 1.55;
+}
+.json-empty {
+	margin: 0;
+	padding: 12px;
 }
 .status {
 	font-variant-numeric: tabular-nums;
@@ -249,6 +268,7 @@ textarea {
 
 .summary {
 	display: flex;
+	margin-top: 0;
 	flex-wrap: wrap;
 	gap: 6px 20px;
 	align-items: center;

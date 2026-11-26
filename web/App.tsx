@@ -245,26 +245,28 @@ export function App() {
 							<p>Check that the local model server is up, then run again.</p>
 						</div>
 					)}
-					{!result && !working && !error && (
-						<p className="muted">
-							Pick a sample and replay its recorded run to watch the agent work.
-						</p>
-					)}
-					<p
-						className={result ? "visually-hidden" : "muted status"}
-						role="status"
-					>
-						{status}
-						{running && " A small local model takes about a minute."}
-					</p>
+					{/* Same fixed-height box as the input, so both panes line up. */}
+					<div className="json-box">
+						{result ? (
+							<pre className="json result" translate="no">
+								{JSON.stringify(result.data, null, 2)}
+							</pre>
+						) : (
+							<p className="muted json-empty" aria-hidden="true">
+								{working
+									? `${status}${running ? " A small local model takes about a minute." : ""}`
+									: "Pick a sample and replay its recorded run to watch the agent work."}
+							</p>
+						)}
+					</div>
 					{result && (
 						<div className="result">
 							<Summary result={result} source={source} />
-							<pre className="json" translate="no">
-								{JSON.stringify(result.data, null, 2)}
-							</pre>
 						</div>
 					)}
+					<p className="visually-hidden" role="status">
+						{status}
+					</p>
 				</section>
 			</div>
 
