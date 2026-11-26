@@ -1,0 +1,215 @@
+{
+  "id": "04-ocr-bill-of-lading",
+  "model": "freight-qwen",
+  "recordedAt": "2026-11-26T16:03:05.540Z",
+  "input": "BILL OF LAD1NG                                   B/L No: ALX2611094\nSHIPPER/EXPORTER\nMOVEIS SERRA GAUCHA IND. E COM. LTDA\nAV. PRES. VARGAS 455  BENTO GONCALVES RS  BRAZIL\nCONSIGNEE\nHUDSON HOME FURNISHINGS CORP\n220 W 34TH ST  NEW YORK NY 10001  USA\nNOTIFY PARTY      SAME AS CONSIGNEE\nVESSEL  CAP SAN LORENZO     VOY 644N\nPORT OF LOAD1NG   BRITJ              PORT OF DISCHARGE   USNYC\nSHIPPED ON BOARD  2O-NOV-2026\nMARKS & NOS     DESCRIPTION OF GOODS                      GROSS WT     MEASUREMENT\nHHF/NY 1-86     86 PKGS WOODEN FURNITURE (DINING SETS)    11 ,340 KGS  58.2 CBM\n                SAID TO CONTAIN 1 X 40HC CONT MSKU 778213-4\nFREIGHT PREPAID AT ITAJAI\nFRETE MARITIMO          BRL   9.850,00\nTAXA THC                BRL   1.120,00\nEMISSAO BL              BRL     350,00\nTOTAL                   BRL  11.32O,00\n",
+  "result": {
+    "ok": true,
+    "data": {
+      "documentType": "bill_of_lading",
+      "shipper": {
+        "name": "MOVEIS SERRA GAUCHA IND. E COM. LTDA",
+        "address": "AV. PRES. VARGAS 455, BENTO GONCALVES RS",
+        "country": "BR"
+      },
+      "consignee": {
+        "name": "HUDSON HOME FURNISHINGS CORP",
+        "address": "220 W 34TH ST, NEW YORK NY 10001",
+        "country": "US"
+      },
+      "portOfLoading": {
+        "code": "BRITJ",
+        "name": "Itajai"
+      },
+      "portOfDischarge": {
+        "code": "USNYC",
+        "name": "New York"
+      },
+      "departureDate": "2026-11-20",
+      "arrivalDate": null,
+      "cargo": {
+        "description": "86 PKGS WOODEN FURNITURE (DINING SETS)",
+        "packages": 86,
+        "grossWeightKg": 11340,
+        "netWeightKg": null
+      },
+      "charges": [
+        {
+          "description": "FREIGHT PREPAID AT ITAJAI",
+          "amount": 9850,
+          "currency": "BRL"
+        },
+        {
+          "description": "TAXA THC",
+          "amount": 1120,
+          "currency": "BRL"
+        },
+        {
+          "description": "EMISSAO BL",
+          "amount": 350,
+          "currency": "BRL"
+        }
+      ],
+      "total": {
+        "amount": 11320,
+        "currency": "BRL"
+      },
+      "totalUsd": 2037.6,
+      "notes": [
+        "Date format interpreted as DD-MMM-YYYY from context (2O-NOV-2026 → 20-NOV-2026)",
+        "Port code BRIT corrected to BRITJ based on document mentioning ITAJAI",
+        "European number format used throughout (dot as thousands separator, comma as decimal separator)"
+      ]
+    },
+    "validationFailures": 0,
+    "steps": [
+      {
+        "turn": 1,
+        "ms": 19495,
+        "reasoning": "Let me analyze this Bill of Lading document and extract the structured data:\n\n1. **Document Type**: This is a Bill of Lading (B/L)\n\n2. **Shipper/Exporter**: \n   - Name: MOVEIS SERRA GAUCHA IND. E COM. LTDA\n   - Address: AV. PRES. VARGAS 455, BENTO GONCALVES RS, BRAZIL\n   - Country: BR (Brazil)\n\n3. **Consignee**:\n   - Name: HUDSON HOME FURNISHINGS CORP\n   - Address: 220 W 34TH ST, NEW YORK NY 10001, USA\n   - Country: US (USA)\n\n4. **Notify Party**: Same as Consignee\n\n5. **Vessel**: CAP SAN LORENZO, VOY 644N\n\n6. **Ports**:\n   - Port of Loading: BRIT (This looks like a typo or abbreviation - should be ITAJAI which is in Brazil)\n   - Port of Discharge: USNYC (New York, USA)\n   \n   Wait, I need to look up these ports properly. Let me check:\n   - \"BRIT\" - This doesn't look like a standard UN/LOCODE. Looking at the context, it says \"FREIGHT PREPAID AT ITAJAI\", so the port of loading should be ITAJAI (Brazil). Let me lookup both BRIT and USNYC to get their proper codes.\n   \n   Actually, looking more carefully: The document says \"PORT OF LOAD1NG\" which appears to have a typo (LOAD1NG instead of LOADING), and shows \"BRIT\". But then it says \"FREIGHT PREPAID AT ITAJAI\". This is confusing. Let me lookup both BRIT and ITAJAI to see which one is correct.\n   \n   Actually, I think \"BRIT\" might be a typo for \"BRSSZ\" (Santos) or similar. But the document explicitly says \"FREIGHT PREPAID AT ITAJAI\", so the port of loading should be ITAJAI. Let me lookup both to get their UN/LOCODEs.\n   \n   I'll investigate the port codes systematically, focusing on the specific locations mentioned in the document. The key is to verify the correct UN/LOCODE for both the loading and discharge ports using the provided information.\n\n7. **Dates**:\n   - Shipped on Board: 20-NOV-2026 (This appears to be DD-MMM-YYYY format)\n   - No arrival date is explicitly stated, but I can calculate it based on transit time if needed.\n\n8. **Cargo**:\n   - Marks & Nos: HHF/NY 1-86\n   - Description: 86 PKGS WOODEN FURNITURE (DINING SETS)\n   - Gross Weight: 11,340 KGS (Note: European format with comma as decimal separator? No, this looks like 11,340 which could be 11.340 in European format = 11340 kg, or it could be 11,340 meaning 11 and 340/1000... Actually looking at the context, 11,340 KGS likely means 11,340 kg = 11340 kg in European notation)\n   - Measurement: 58.2 CBM (cubic meters)\n   - Packages: 86 PKGS\n\n9. **Charges**:\n   - Freight Prepaid at Itajai: BRL 9,850.00\n   - THC Tax: BRL 1,120.00\n   - Bill of Lading Issuance: BRL 350.00\n   - Total: BRL 11,320.00 (Note: \"11.32O,00\" appears to be a typo for 11,320.00)\n\nI'll need to carefully verify the port codes and convert the currency amounts accurately. The document contains some potential typos that require careful interpretation. I'll investigate the port codes systematically, focusing on the specific locations mentioned in the document. The key is to verify the correct UN/LOCODE for both the loading and discharge ports using the provided information.",
+        "toolCalls": [
+          {
+            "name": "lookup_port",
+            "input": {
+              "query": "ITAJAI"
+            },
+            "output": {
+              "matches": [
+                {
+                  "code": "BRITJ",
+                  "name": "Itajai",
+                  "country": "BR"
+                }
+              ]
+            },
+            "isError": false
+          },
+          {
+            "name": "lookup_port",
+            "input": {
+              "query": "USNYC"
+            },
+            "output": {
+              "matches": [
+                {
+                  "code": "USNYC",
+                  "name": "New York",
+                  "country": "US",
+                  "aliases": [
+                    "Newark",
+                    "NY/NJ"
+                  ]
+                }
+              ]
+            },
+            "isError": false
+          }
+        ],
+        "tokens": {
+          "prompt": 2422,
+          "completion": 1011
+        }
+      },
+      {
+        "turn": 2,
+        "ms": 3487,
+        "reasoning": "Good, so:\n- Port of Loading: BRITJ (Itajai, Brazil) - this matches the document's \"BRIT\" which was a typo for BRITJ\n- Port of Discharge: USNYC (New York, USA)\n\nNow let me convert the total from BRL to USD. The total is 11,320.00 BRL (the document shows \"11.32O,00\" which appears to be a typo for 11,320.00).\n\nLet me calculate:",
+        "toolCalls": [
+          {
+            "name": "convert_currency",
+            "input": {
+              "amount": 11320,
+              "from": "BRL",
+              "to": "USD"
+            },
+            "output": {
+              "amount": 2037.6,
+              "rate": 0.18,
+              "rateDate": "2026-11-01"
+            },
+            "isError": false
+          }
+        ],
+        "tokens": {
+          "prompt": 3501,
+          "completion": 179
+        }
+      },
+      {
+        "turn": 3,
+        "ms": 40280,
+        "reasoning": "Good, so 11,320 BRL = 2,037.60 USD.\n\nNow let me compile all the data for submit_extraction:\n\n- documentType: \"bill_of_lading\"\n- shipper: \n  - name: \"MOVEIS SERRA GAUCHA IND. E COM. LTDA\"\n  - address: \"AV. PRES. VARGAS 455, BENTO GONCALVES RS\"\n  - country: \"BR\"\n- consignee:\n  - name: \"HUDSON HOME FURNISHINGS CORP\"\n  - address: \"220 W 34TH ST, NEW YORK NY 10001\"\n  - country: \"US\"\n- portOfLoading:\n  - code: \"BRITJ\"\n  - name: \"Itajai\"\n- portOfDischarge:\n  - code: \"USNYC\"\n  - name: \"New York\"\n- departureDate: \"2026-11-20\" (from \"2O-NOV-2026\" - the O is a typo for 0)\n- arrivalDate: null (not stated in document)\n- cargo:\n  - description: \"86 PKGS WOODEN FURNITURE (DINING SETS)\"\n  - packages: 86\n  - grossWeightKg: 11340 (from \"11,340 KGS\" - European format where comma is decimal separator, so 11.340 = 11340 kg)\n  - netWeightKg: null (not stated)\n- charges:\n  - [{\"description\": \"FREIGHT PREPAID AT ITAJAI\", \"amount\": 9850, \"currency\": \"BRL\"}, {\"description\": \"TAXA THC\", \"amount\": 1120, \"currency\": \"BRL\"}, {\"description\": \"EMISSAO BL\", \"amount\": 350, \"currency\": \"BRL\"}]\n- total: {\"amount\": 11320, \"currency\": \"BRL\"} (from \"11.32O,00\" which is a typo for 11,320.00)\n- totalUsd: 2037.6\n- notes: [\"Date format interpreted as DD-MMM-YYYY from context\", \"Port code BRIT was corrected to BRITJ based on document mentioning ITAJAI\", \"European number format used for weights and charges (comma as decimal separator)\"]\n\nWait, let me reconsider the weight. The document says \"11 ,340 KGS\" with a space before the comma. In European format, this would be 11.340 kg = 11340 kg. But wait, that seems like a lot for 86 packages of wooden furniture dining sets... Let me think again.\n\nActually, looking at it more carefully: \"11 ,340 KGS\" - the space before the comma is unusual. It could be:\n- 11.340 kg = 11340 kg (European format)\n- Or it could be a typo for 11340 kg\n\nGiven that this is European format and the document is from Brazil, I'll interpret \"11 ,340\" as 11.340 = 11340 kg.\n\nActually wait - looking at the charges: FREIGHT PREPAID AT ITAJAI is BRL 9,850.00 which in European format would be 9.850 = 9850 BRL. That makes sense. So the weight \"11 ,340 KGS\" should also be interpreted as 11.340 kg = 11340 kg.\n\nBut wait, that's a very heavy load for 86 packages of wooden furniture dining sets... Let me reconsider. Maybe it's actually 11.340 meaning 11 and 340/1000? No, that doesn't make sense either.\n\nActually, I think the most reasonable interpretation is that \"11 ,340 KGS\" means 11,340 kg = 11340 kg in European notation (where comma is decimal separator). The space before the comma might be a formatting issue.\n\nLet me proceed with grossWeightKg: 11340.\n\nActually wait - I need to reconsider. In European format, numbers like \"9.850,00\" mean 9850.00 (dot is thousands separator, comma is decimal). But the document shows \"BRL 9.850,00\" which would be 9.850 = 9850 in European format... but that's written with a dot and comma together.\n\nActually, looking at the document again:\n- \"FRETE MARITIMO          BRL   9.850,00\" - this looks like it could be using European format where 9.850 means 9850 (dot as thousands separator) and ,00 is the decimal part... but that's unusual.\n\nWait, I think I'm overcomplicating this. Let me look at the total: \"TOTAL                   BRL  11.32O,00\" - the O is clearly a typo for 0, so it should be 11.320,00 which in European format would be 11.320 = 11320 (dot as thousands separator).\n\nSo the pattern is: dot (.) is thousands separator, comma (,) is decimal separator. This is standard European format.\n\nTherefore:\n- \"9.850,00\" = 9850.00 BRL\n- \"1.120,00\" = 1120.00 BRL  \n- \"350,00\" = 350.00 BRL\n- \"11.32O,00\" (typo for O) = 11320.00 BRL\n\nAnd for weight: \"11 ,340 KGS\" - the space before comma is odd. If we follow the same pattern, it could be 11.340 kg = 11340 kg. But that seems like a lot... \n\nActually, I think the most reasonable interpretation given the European format context is:\n- \"11 ,340 KGS\" = 11.340 kg = 11340 kg\n\nLet me proceed with this interpretation.\n\nNow for notes, I should mention:\n- The date format was interpreted as DD-MMM-YYYY (2O-NOV-2026 → 20-NOV-2026)\n- The port code BRIT was corrected to BRITJ based on the document mentioning ITAJAI\n- European number format used throughout (dot as thousands separator, comma as decimal)\n\nLet me submit this extraction.",
+        "toolCalls": [
+          {
+            "name": "submit_extraction",
+            "input": {
+              "documentType": "bill_of_lading",
+              "shipper": {
+                "address": "AV. PRES. VARGAS 455, BENTO GONCALVES RS",
+                "country": "BR",
+                "name": "MOVEIS SERRA GAUCHA IND. E COM. LTDA"
+              },
+              "consignee": {
+                "address": "220 W 34TH ST, NEW YORK NY 10001",
+                "country": "US",
+                "name": "HUDSON HOME FURNISHINGS CORP"
+              },
+              "portOfLoading": {
+                "code": "BRITJ",
+                "name": "Itajai"
+              },
+              "portOfDischarge": {
+                "code": "USNYC",
+                "name": "New York"
+              },
+              "departureDate": "2026-11-20",
+              "arrivalDate": null,
+              "cargo": {
+                "description": "86 PKGS WOODEN FURNITURE (DINING SETS)",
+                "grossWeightKg": 11340,
+                "netWeightKg": null,
+                "packages": 86
+              },
+              "charges": [
+                {
+                  "amount": 9850,
+                  "currency": "BRL",
+                  "description": "FREIGHT PREPAID AT ITAJAI"
+                },
+                {
+                  "amount": 1120,
+                  "currency": "BRL",
+                  "description": "TAXA THC"
+                },
+                {
+                  "amount": 350,
+                  "currency": "BRL",
+                  "description": "EMISSAO BL"
+                }
+              ],
+              "total": {
+                "amount": 11320,
+                "currency": "BRL"
+              },
+              "totalUsd": 2037.6,
+              "notes": [
+                "Date format interpreted as DD-MMM-YYYY from context (2O-NOV-2026 → 20-NOV-2026)",
+                "Port code BRIT corrected to BRITJ based on document mentioning ITAJAI",
+                "European number format used throughout (dot as thousands separator, comma as decimal separator)"
+              ]
+            },
+            "output": {
+              "ok": true
+            },
+            "isError": false
+          }
+        ],
+        "tokens": {
+          "prompt": 3726,
+          "completion": 2089
+        }
+      }
+    ],
+    "totalMs": 63262
+  }
+}

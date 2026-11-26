@@ -1,0 +1,30 @@
+FREIGHT INVOICE                                   No. INV-2026-0418
+                                                  Date: 2026-10-02
+
+Bill to / Consignee:
+Van Dijk Koffie Import B.V.
+Wilhelminakade 91, 3072 AP Rotterdam, Netherlands
+
+Shipper:
+Cooperativa Cafeeira Alta Mogiana Ltda.
+Rua Voluntarios da Patria 1200, Franca - SP, Brazil
+
+Vessel / Voyage: MSC ARINA / 641N
+Port of Loading: Santos, Brazil
+Port of Discharge: Rotterdam, Netherlands
+ETD: 2026-10-08
+ETA: 2026-10-29
+
+Cargo: Green coffee beans, 320 bags x 60 kg, in 1 x 20' DRY container
+Gross weight: 19,520 kg
+Net weight: 19,200 kg
+
+Charges                                        USD
+Ocean freight 1x20DV                        1,850.00
+Bunker adjustment factor (BAF)                410.00
+Terminal handling charge origin (THC)         245.00
+Documentation fee                              75.00
+                                           ----------
+TOTAL DUE                                   2,580.00
+
+Payment terms: 30 days net.

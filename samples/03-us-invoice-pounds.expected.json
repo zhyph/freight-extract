@@ -1,0 +1,12 @@
+{
+	"documentType": "invoice",
+	"shipper": { "name": "Golden State Almond Growers" },
+	"consignee": { "name": "Kansai Foods Trading" },
+	"portOfLoading": { "code": "USLAX" },
+	"portOfDischarge": { "code": "JPYOK" },
+	"departureDate": "2026-11-09",
+	"arrivalDate": "2026-11-24",
+	"cargo": { "packages": 1200, "grossWeightKg": 28957, "netWeightKg": 27216 },
+	"total": { "amount": 3159.5, "currency": "USD" },
+	"totalUsd": 3159.5
+}

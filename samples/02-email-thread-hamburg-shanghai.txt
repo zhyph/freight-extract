@@ -1,0 +1,42 @@
+From: Lena Hoffmann <l.hoffmann@nordlicht-logistik.example>
+Sent: Thursday, 6 November 2026 09:14
+To: wei.zhang@huadong-machinery.example
+Subject: FW: Booking confirmation NLL-BK-77120 / HAM-SHA
+
+Hi Wei,
+
+see below, booking is confirmed at the new rate. Please note cut-off is 12/11.
+
+Kind regards
+Lena
+
+-----Original Message-----
+From: booking@carrier-portal.example
+Sent: Wednesday, 5 November 2026 17:40
+Subject: Booking confirmation NLL-BK-77120
+
+BOOKING CONFIRMATION
+Booking no.:      NLL-BK-77120
+Shipper:          Praezisionswerk Albrecht GmbH, Industriestr. 14, 70565 Stuttgart, DE
+Consignee:        Shanghai Huadong Machinery Trading Co., Ltd., 1288 Pudong Ave, Shanghai, CN
+Place of receipt: Stuttgart (truck)
+POL:              Hamburg, DE
+POD:              Shanghai, CN
+ETD:              14/11/2026
+ETA:              02/12/2026  (subject to change)
+Equipment:        2 x 40' HC
+Commodity:        CNC milling machine parts, 18 crates
+Gross weight:     31.400 kg
+
+Ocean freight     2 x 1.950,00 EUR   =  3.900,00 EUR
+THC Hamburg       2 x   285,00 EUR   =    570,00 EUR
+ISPS                                 =     18,00 EUR
+Total                                   4.488,00 EUR
+
+-----Original Message-----
+From: Lena Hoffmann
+Sent: Monday, 27 October 2026 11:02
+Subject: RE: rate request HAM-SHA
+
+> Hi Wei, our quote is 2 x 2.100,00 EUR ocean freight, valid until 31/10/2026.
+> ETD would be 07/11/2026 if you confirm this week.

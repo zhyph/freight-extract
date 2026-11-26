@@ -1,0 +1,12 @@
+{
+	"documentType": "quote",
+	"shipper": { "name": "Celulose Campos Gerais" },
+	"consignee": { "name": "Papelera Levantina" },
+	"portOfLoading": { "code": "BRPNG" },
+	"portOfDischarge": { "code": "ESVLC" },
+	"departureDate": "2026-12-05",
+	"arrivalDate": "2026-12-29",
+	"cargo": { "packages": 400, "grossWeightKg": 100000 },
+	"total": { "amount": 4660, "currency": "EUR" },
+	"totalUsd": 5079.4
+}

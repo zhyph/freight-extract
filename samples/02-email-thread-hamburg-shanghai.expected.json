@@ -1,0 +1,12 @@
+{
+	"documentType": "booking_confirmation",
+	"shipper": { "name": "Praezisionswerk Albrecht GmbH" },
+	"consignee": { "name": "Shanghai Huadong Machinery Trading" },
+	"portOfLoading": { "code": "DEHAM" },
+	"portOfDischarge": { "code": "CNSHA" },
+	"departureDate": "2026-11-14",
+	"arrivalDate": "2026-12-02",
+	"cargo": { "packages": 18, "grossWeightKg": 31400 },
+	"total": { "amount": 4488, "currency": "EUR" },
+	"totalUsd": 4891.92
+}

@@ -1,0 +1,12 @@
+{
+	"documentType": "invoice",
+	"shipper": { "name": "Cooperativa Cafeeira Alta Mogiana" },
+	"consignee": { "name": "Van Dijk Koffie Import" },
+	"portOfLoading": { "code": "BRSSZ" },
+	"portOfDischarge": { "code": "NLRTM" },
+	"departureDate": "2026-10-08",
+	"arrivalDate": "2026-10-29",
+	"cargo": { "packages": 320, "grossWeightKg": 19520, "netWeightKg": 19200 },
+	"total": { "amount": 2580, "currency": "USD" },
+	"totalUsd": 2580
+}

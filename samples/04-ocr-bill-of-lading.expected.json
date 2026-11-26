@@ -1,0 +1,12 @@
+{
+	"documentType": "bill_of_lading",
+	"shipper": { "name": "Moveis Serra Gaucha" },
+	"consignee": { "name": "Hudson Home Furnishings" },
+	"portOfLoading": { "code": "BRITJ" },
+	"portOfDischarge": { "code": "USNYC" },
+	"departureDate": "2026-11-20",
+	"arrivalDate": null,
+	"cargo": { "packages": 86, "grossWeightKg": 11340 },
+	"total": { "amount": 11320, "currency": "BRL" },
+	"totalUsd": 2037.6
+}

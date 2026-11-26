@@ -1,0 +1,192 @@
+{
+  "id": "01-invoice-santos-rotterdam",
+  "model": "freight-qwen",
+  "recordedAt": "2026-11-26T16:00:25.652Z",
+  "input": "FREIGHT INVOICE                                   No. INV-2026-0418\n                                                  Date: 2026-10-02\n\nBill to / Consignee:\nVan Dijk Koffie Import B.V.\nWilhelminakade 91, 3072 AP Rotterdam, Netherlands\n\nShipper:\nCooperativa Cafeeira Alta Mogiana Ltda.\nRua Voluntarios da Patria 1200, Franca - SP, Brazil\n\nVessel / Voyage: MSC ARINA / 641N\nPort of Loading: Santos, Brazil\nPort of Discharge: Rotterdam, Netherlands\nETD: 2026-10-08\nETA: 2026-10-29\n\nCargo: Green coffee beans, 320 bags x 60 kg, in 1 x 20' DRY container\nGross weight: 19,520 kg\nNet weight: 19,200 kg\n\nCharges                                        USD\nOcean freight 1x20DV                        1,850.00\nBunker adjustment factor (BAF)                410.00\nTerminal handling charge origin (THC)         245.00\nDocumentation fee                              75.00\n                                           ----------\nTOTAL DUE                                   2,580.00\n\nPayment terms: 30 days net.\n",
+  "result": {
+    "ok": true,
+    "data": {
+      "documentType": "invoice",
+      "shipper": {
+        "name": "Cooperativa Cafeeira Alta Mogiana Ltda.",
+        "address": "Rua Voluntarios da Patria 1200, Franca - SP, Brazil",
+        "country": "BR"
+      },
+      "consignee": {
+        "name": "Van Dijk Koffie Import B.V.",
+        "address": "Wilhelminakade 91, 3072 AP Rotterdam, Netherlands",
+        "country": "NL"
+      },
+      "portOfLoading": {
+        "code": "BRSSZ",
+        "name": "Santos"
+      },
+      "portOfDischarge": {
+        "code": "NLRTM",
+        "name": "Rotterdam"
+      },
+      "departureDate": "2026-10-08",
+      "arrivalDate": "2026-10-29",
+      "cargo": {
+        "description": "Green coffee beans, 320 bags x 60 kg, in 1 x 20' DRY container",
+        "packages": 320,
+        "grossWeightKg": 19520,
+        "netWeightKg": 19200
+      },
+      "charges": [
+        {
+          "description": "Ocean freight 1x20DV",
+          "amount": 1850,
+          "currency": "USD"
+        },
+        {
+          "description": "Bunker adjustment factor (BAF)",
+          "amount": 410,
+          "currency": "USD"
+        },
+        {
+          "description": "Terminal handling charge origin (THC)",
+          "amount": 245,
+          "currency": "USD"
+        },
+        {
+          "description": "Documentation fee",
+          "amount": 75,
+          "currency": "USD"
+        }
+      ],
+      "total": {
+        "amount": 2580,
+        "currency": "USD"
+      },
+      "totalUsd": 2580,
+      "notes": [
+        "Weights in European format: 19,520 = 19520 kg"
+      ]
+    },
+    "validationFailures": 0,
+    "steps": [
+      {
+        "turn": 1,
+        "ms": 13151,
+        "reasoning": "Let me analyze this freight invoice and extract the structured data:\n\n1. Document Type: This is a FREIGHT INVOICE, so documentType = \"invoice\"\n\n2. Shipper:\n   - Name: Cooperativa Cafeeira Alta Mogiana Ltda.\n   - Address: Rua Voluntarios da Patria 1200, Franca - SP, Brazil\n   - Country: BR (Brazil)\n\n3. Consignee:\n   - Name: Van Dijk Koffie Import B.V.\n   - Address: Wilhelminakade 91, 3072 AP Rotterdam, Netherlands\n   - Country: NL (Netherlands)\n\n4. Port of Loading: Santos, Brazil\n   - Need to lookup_port for \"Santos\" to get UN/LOCODE\n\n5. Port of Discharge: Rotterdam, Netherlands\n   - Need to lookup_port for \"Rotterdam\" to get UN/LOCODE\n\n6. Departure Date (ETD): 2026-10-08\n7. Arrival Date (ETA): 2026-10-29\n\n8. Cargo:\n   - Description: Green coffee beans, 320 bags x 60 kg, in 1 x 20' DRY container\n   - Packages: 320 bags\n   - Gross Weight: 19,520 kg (European format with comma)\n   - Net Weight: 19,200 kg\n\n9. Charges (all in USD):\n   - Ocean freight 1x20DV: 1,850.00\n   - Bunker adjustment factor (BAF): 410.00\n   - Terminal handling charge origin (THC): 245.00\n   - Documentation fee: 75.00\n   - Total: 2,580.00\n\n10. Total in USD: 2,580.00 (already in USD)\n\nLet me first look up the ports to get their UN/LOCODEs.",
+        "toolCalls": [
+          {
+            "name": "lookup_port",
+            "input": {
+              "query": "Santos"
+            },
+            "output": {
+              "matches": [
+                {
+                  "code": "BRSSZ",
+                  "name": "Santos",
+                  "country": "BR"
+                }
+              ]
+            },
+            "isError": false
+          },
+          {
+            "name": "lookup_port",
+            "input": {
+              "query": "Rotterdam"
+            },
+            "output": {
+              "matches": [
+                {
+                  "code": "NLRTM",
+                  "name": "Rotterdam",
+                  "country": "NL"
+                }
+              ]
+            },
+            "isError": false
+          }
+        ],
+        "tokens": {
+          "prompt": 2398,
+          "completion": 504
+        }
+      },
+      {
+        "turn": 2,
+        "ms": 20020,
+        "reasoning": "Good, I have the port codes:\n- Santos: BRSSZ\n- Rotterdam: NLRTM\n\nNow let me prepare the submit_extraction call with all the data:\n\n- documentType: \"invoice\"\n- shipper: {name: \"Cooperativa Cafeeira Alta Mogiana Ltda.\", address: \"Rua Voluntarios da Patria 1200, Franca - SP, Brazil\", country: \"BR\"}\n- consignee: {name: \"Van Dijk Koffie Import B.V.\", address: \"Wilhelminakade 91, 3072 AP Rotterdam, Netherlands\", country: \"NL\"}\n- portOfLoading: {code: \"BRSSZ\", name: \"Santos\"}\n- portOfDischarge: {code: \"NLRTM\", name: \"Rotterdam\"}\n- departureDate: \"2026-10-08\"\n- arrivalDate: \"2026-10-29\"\n- cargo: {description: \"Green coffee beans, 320 bags x 60 kg, in 1 x 20' DRY container\", packages: 320, grossWeightKg: 19520, netWeightKg: 19200}\n- charges: array of charge objects\n- total: {amount: 2580.00, currency: \"USD\"}\n- totalUsd: 2580.00 (already in USD)\n- notes: I should note that the weights are in European format with commas (19,520 = 19520 kg)\n\nLet me structure the charges array properly:\n[\n  {\"description\": \"Ocean freight 1x20DV\", \"amount\": 1850.00, \"currency\": \"USD\"},\n  {\"description\": \"Bunker adjustment factor (BAF)\", \"amount\": 410.00, \"currency\": \"USD\"},\n  {\"description\": \"Terminal handling charge origin (THC)\", \"amount\": 245.00, \"currency\": \"USD\"},\n  {\"description\": \"Documentation fee\", \"amount\": 75.00, \"currency\": \"USD\"}\n]\n\nSince the total is already in USD, I don't need to call convert_currency. But let me check - the instruction says \"If the document has a total, call convert_currency to fill totalUsd.\" However, the total is already in USD, so converting from USD to USD would be trivial. Let me just use 2580.00 as totalUsd since it's already in USD.\n\nActually, looking at the schema more carefully, totalUsd should be \"total converted with convert_currency; null if total is null\". Since the total is 2580.00 USD, and we're converting from USD to USD, the result would still be 2580.00. I'll just use that value directly since no conversion is needed.\n\nNow let me submit the extraction.",
+        "toolCalls": [
+          {
+            "name": "submit_extraction",
+            "input": {
+              "documentType": "invoice",
+              "shipper": {
+                "address": "Rua Voluntarios da Patria 1200, Franca - SP, Brazil",
+                "country": "BR",
+                "name": "Cooperativa Cafeeira Alta Mogiana Ltda."
+              },
+              "consignee": {
+                "address": "Wilhelminakade 91, 3072 AP Rotterdam, Netherlands",
+                "country": "NL",
+                "name": "Van Dijk Koffie Import B.V."
+              },
+              "portOfLoading": {
+                "code": "BRSSZ",
+                "name": "Santos"
+              },
+              "portOfDischarge": {
+                "code": "NLRTM",
+                "name": "Rotterdam"
+              },
+              "departureDate": "2026-10-08",
+              "arrivalDate": "2026-10-29",
+              "cargo": {
+                "description": "Green coffee beans, 320 bags x 60 kg, in 1 x 20' DRY container",
+                "grossWeightKg": 19520,
+                "netWeightKg": 19200,
+                "packages": 320
+              },
+              "charges": [
+                {
+                  "amount": 1850,
+                  "currency": "USD",
+                  "description": "Ocean freight 1x20DV"
+                },
+                {
+                  "amount": 410,
+                  "currency": "USD",
+                  "description": "Bunker adjustment factor (BAF)"
+                },
+                {
+                  "amount": 245,
+                  "currency": "USD",
+                  "description": "Terminal handling charge origin (THC)"
+                },
+                {
+                  "amount": 75,
+                  "currency": "USD",
+                  "description": "Documentation fee"
+                }
+              ],
+              "total": {
+                "amount": 2580,
+                "currency": "USD"
+              },
+              "totalUsd": 2580,
+              "notes": [
+                "Weights in European format: 19,520 = 19520 kg"
+              ]
+            },
+            "output": {
+              "ok": true
+            },
+            "isError": false
+          }
+        ],
+        "tokens": {
+          "prompt": 2960,
+          "completion": 1164
+        }
+      }
+    ],
+    "totalMs": 33177
+  }
+}
