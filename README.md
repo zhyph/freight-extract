@@ -84,3 +84,7 @@ LLM_BASE_URL=https://api.groq.com/openai/v1 LLM_API_KEY=... LLM_MODEL=<model> np
 - tool errors returned to the model instead of thrown
 
 `test/schema.test.ts` covers each business rule and the tools. `test/score.test.ts` covers the eval scorer and the baseline's number and date parsers.
+
+## License
+
+MIT, see `LICENSE`. Held-out documents 01-04 come from [sensible-hq/sensible-configuration-library](https://github.com/sensible-hq/sensible-configuration-library) under its MIT license (`samples/holdout/LICENSE-sensible-configuration-library.txt`). Port data is from the UN/LOCODE list via [datasets/un-locode](https://github.com/datasets/un-locode).
