@@ -1,75 +1,19 @@
 import { z } from "zod";
+import portRows from "./data/ports.json";
 
-// UN/LOCODE subset. ponytail: hardcoded table, swap for the full UNECE CSV if coverage matters.
-export const PORTS: {
-	code: string;
-	name: string;
-	country: string;
-	aliases?: string[];
-}[] = [
-	{ code: "BRSSZ", name: "Santos", country: "BR" },
-	{ code: "BRPNG", name: "Paranagua", country: "BR" },
-	{ code: "BRITJ", name: "Itajai", country: "BR" },
-	{ code: "BRRIG", name: "Rio Grande", country: "BR" },
-	{ code: "BRRIO", name: "Rio de Janeiro", country: "BR" },
-	{ code: "BRSUA", name: "Suape", country: "BR" },
-	{ code: "ARBUE", name: "Buenos Aires", country: "AR" },
-	{ code: "UYMVD", name: "Montevideo", country: "UY" },
-	{ code: "CLSAI", name: "San Antonio", country: "CL" },
-	{ code: "PECLL", name: "Callao", country: "PE" },
-	{ code: "MXZLO", name: "Manzanillo", country: "MX" },
-	{ code: "USLAX", name: "Los Angeles", country: "US", aliases: ["San Pedro"] },
-	{ code: "USLGB", name: "Long Beach", country: "US" },
-	{
-		code: "USNYC",
-		name: "New York",
-		country: "US",
-		aliases: ["Newark", "NY/NJ"],
-	},
-	{ code: "USHOU", name: "Houston", country: "US" },
-	{ code: "USSAV", name: "Savannah", country: "US" },
-	{ code: "CAVAN", name: "Vancouver", country: "CA" },
-	{ code: "NLRTM", name: "Rotterdam", country: "NL" },
-	{
-		code: "BEANR",
-		name: "Antwerp",
-		country: "BE",
-		aliases: ["Antwerpen", "Anvers"],
-	},
-	{ code: "DEHAM", name: "Hamburg", country: "DE" },
-	{ code: "GBFXT", name: "Felixstowe", country: "GB" },
-	{ code: "FRLEH", name: "Le Havre", country: "FR" },
-	{ code: "ESVLC", name: "Valencia", country: "ES" },
-	{ code: "ESALG", name: "Algeciras", country: "ES" },
-	{ code: "PTSIE", name: "Sines", country: "PT" },
-	{ code: "ITGOA", name: "Genoa", country: "IT", aliases: ["Genova"] },
-	{ code: "AEJEA", name: "Jebel Ali", country: "AE", aliases: ["Dubai"] },
-	{
-		code: "INNSA",
-		name: "Nhava Sheva",
-		country: "IN",
-		aliases: ["JNPT", "Mumbai"],
-	},
-	{ code: "SGSIN", name: "Singapore", country: "SG" },
-	{ code: "MYPKG", name: "Port Klang", country: "MY" },
-	{ code: "CNSHA", name: "Shanghai", country: "CN" },
-	{ code: "CNNGB", name: "Ningbo", country: "CN" },
-	{
-		code: "CNSZX",
-		name: "Shenzhen",
-		country: "CN",
-		aliases: ["Yantian", "Shekou"],
-	},
-	{ code: "HKHKG", name: "Hong Kong", country: "HK" },
-	{ code: "TWKHH", name: "Kaohsiung", country: "TW" },
-	{ code: "KRPUS", name: "Busan", country: "KR", aliases: ["Pusan"] },
-	{ code: "JPYOK", name: "Yokohama", country: "JP" },
-	{ code: "JPTYO", name: "Tokyo", country: "JP" },
-	{ code: "AUMEL", name: "Melbourne", country: "AU" },
-	{ code: "ZADUR", name: "Durban", country: "ZA" },
-];
+type Port = { code: string; name: string; country: string; aliases: string[] };
 
-// USD value of one unit. Fixed snapshot so tests and evals are deterministic.
+// Every UN/LOCODE location flagged as a seaport (17.5k). Rebuild with scripts/build-ports.mjs.
+export const PORTS: Port[] = (portRows as string[][]).map(
+	([code = "", country = "", name = "", ...aliases]) => ({
+		code,
+		country,
+		name,
+		aliases,
+	}),
+);
+const BY_CODE = new Map(PORTS.map((p) => [p.code, p]));
+
 export const RATES_DATE = "2026-11-01";
 export const USD_PER_UNIT: Record<string, number> = {
 	USD: 1,
@@ -92,20 +36,33 @@ const fold = (s: string) =>
 		.normalize("NFD")
 		.replace(/\p{Diacritic}/gu, "")
 		.toLowerCase()
+		.replace(/[^a-z0-9]+/g, " ")
 		.trim();
 
 export const findPortByCode = (code: string) =>
-	PORTS.find((p) => p.code === code.toUpperCase());
+	BY_CODE.get(code.replace(/\s/g, "").toUpperCase());
 
-export function lookupPort(query: string) {
-	const q = fold(query);
-	const byCode = findPortByCode(query.replace(/\s/g, ""));
+// Exact name, then prefix, then substring. Optional country narrows ambiguous names (Valencia ES/VE).
+export function lookupPort(query: string, country?: string) {
+	const byCode = findPortByCode(query);
 	if (byCode) return [byCode];
-	return PORTS.filter((p) =>
-		[p.name, ...(p.aliases ?? [])].some(
-			(n) => fold(n).includes(q) || q.includes(fold(n)),
-		),
-	).slice(0, 5);
+	const q = fold(query.replace(/^port of /i, ""));
+	if (!q) return [];
+	const scored: [number, Port][] = [];
+	for (const p of PORTS) {
+		if (country && p.country !== country.toUpperCase()) continue;
+		let best = 0;
+		for (const n of [p.name, ...p.aliases].map(fold)) {
+			if (n === q) best = 3;
+			else if (n.startsWith(q)) best = Math.max(best, 2);
+			else if (n.includes(q)) best = Math.max(best, 1);
+		}
+		if (best) scored.push([best, p]);
+	}
+	return scored
+		.sort((a, b) => b[0] - a[0])
+		.slice(0, 5)
+		.map(([, p]) => p);
 }
 
 export function convertCurrency(amount: number, from: string, to: string) {
@@ -128,6 +85,11 @@ export const LookupPortInput = z.object({
 		.string()
 		.min(1)
 		.describe("Port city name or UN/LOCODE, e.g. 'Santos' or 'BRSSZ'"),
+	country: z
+		.string()
+		.length(2)
+		.optional()
+		.describe("ISO 3166-1 alpha-2 country to narrow the search, e.g. ES"),
 });
 
 export const ConvertCurrencyInput = z.object({

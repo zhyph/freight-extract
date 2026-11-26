@@ -1,0 +1,11 @@
+{
+	"documentType": "other",
+	"shipper": { "name": null },
+	"consignee": { "name": null },
+	"portOfDischarge": { "code": "NLRTM" },
+	"departureDate": "2023-03-14",
+	"arrivalDate": "2023-04-29",
+	"cargo": { "packages": 235, "grossWeightKg": 16200, "netWeightKg": null },
+	"total": null,
+	"totalUsd": null
+}

@@ -1,0 +1,66 @@
+InCap
+
+Invoice Page 1 of 1
+Exporter Invoice No. & date
+Dt. 12.04.2023
+LUT ARN i Dated: 30.03.2023
+Other reference(s
+I————
+
+End Use Code:
+Exp. ref:
+
+Consignee Buyer(if other than consignee)
+
+Country of origin of goods Country of final destination
+India Netherlands
+Acknowledgement Date: 12.04.2023 14:27:00 Terms of delivery and payment
+Pre-Carriage by Place of Receipt by Pre-Carrier EXW TUMKUR
+TRAILER TUMKUR 100% Advance-INCAP IN
+Vessel/Flight No Port of loading
+ICD BANGALORE
+Port of discharge Final destination Marks & OTL Nos: BOLT50448556
+ROTTERDAM THE NETHERLANDS Container No: YMMU 677 065 (0)
+Cust mat. no Commodity Code Cust PO No. Description of goods prone ba am
+MG3000352 73269099 P2301581 1 ) MG3000352 [Rev. Aj - Enclosure 800 112.02 89,616.00
+LFP304
+Mechanical Component
+MG3000352 73269099 P2301496 2 ) MG3000352 [Rev. A] - Enclosure 50 112.02 5,601.00
+LFP304
+Mechanical Component
+MG3000255 73269099 P2301580 3 ) LFP24V 230A Enclosure 250 78.90 19,725.00
+MG3000255 Rev 0.3
+
+Mechanical Component
+
+Statement of Origin
+The cvpote the products covered by this document declares that, except where otherwise clearly indicated. These
+products are of indian preferential origin according to rules of origin of the Generalised system of Preferences of the European Union and that the
+
+origin criterion met is W7326.
+
+Amount Chargeable (in words)
+
+US DOLLAR ONE HUNDRED FOURTEEN THOUSAND NINE HUNDRED FORTY-TWo ony | /°@!: inde
+
+Net wt: 8,759
+Gross wt: 9,263
+
+No & Kind of Pkgs: 23 ( TWENTY-THREE PLYWOOD BOX )
+
+SUPPLY MEANT FOR EXPORT UNDER LETTER OF UNDERTAKING WITHOUT PAYMENT
+OF IGST.
+
+Customs Reg. No. 84 / 07 dated 05.06.2007
+
+"The goods are entirely manufactured in India EHTP"
+
+We intend to claim rewards under Merchandise Exports From India Scheme (MEIS) For Incap Contract Ns
+
+Scheme Reward: Yes For INCAP CONTRACT M RING,SERVICES PVT LTD,
+EHTP UNIT
+
+Declaration:
+We declare that this invoice shows the actual price of the goods
+described and that all particulars are true and correct Signature & Date
+

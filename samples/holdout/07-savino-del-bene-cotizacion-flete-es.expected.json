@@ -1,0 +1,11 @@
+{
+	"documentType": "quote",
+	"consignee": { "name": null },
+	"portOfLoading": { "code": "ESBIO" },
+	"portOfDischarge": { "code": "PECLL" },
+	"departureDate": null,
+	"arrivalDate": null,
+	"cargo": { "packages": null, "grossWeightKg": null, "netWeightKg": null },
+	"total": null,
+	"totalUsd": null
+}

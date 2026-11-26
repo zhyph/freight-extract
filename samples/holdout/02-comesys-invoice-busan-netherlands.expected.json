@@ -1,0 +1,12 @@
+{
+	"documentType": "invoice",
+	"shipper": { "name": "ComeSys" },
+	"consignee": { "name": null },
+	"portOfLoading": { "code": "KRPUS" },
+	"portOfDischarge": { "code": null },
+	"departureDate": "2023-05-03",
+	"arrivalDate": null,
+	"cargo": { "packages": null, "grossWeightKg": null, "netWeightKg": null },
+	"total": { "amount": 23200.0, "currency": "USD" },
+	"totalUsd": 23200.0
+}

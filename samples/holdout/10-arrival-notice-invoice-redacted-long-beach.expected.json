@@ -1,0 +1,15 @@
+{
+	"consignee": {
+		"name": null
+	},
+	"portOfDischarge": {
+		"code": "USLGB"
+	},
+	"departureDate": "2015-06-24",
+	"arrivalDate": "2015-07-11",
+	"cargo": {
+		"packages": 10,
+		"grossWeightKg": null,
+		"netWeightKg": null
+	}
+}

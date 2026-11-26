@@ -29,11 +29,19 @@ const extractApi: Plugin = {
 			if (typeof text !== "string" || !text.trim() || text.length > MAX_INPUT) {
 				return send(400, { error: `text must be 1-${MAX_INPUT} characters` });
 			}
+			// NDJSON stream: one {"step"} line per finished turn, then {"result"} or {"error"}.
+			res.statusCode = 200;
+			res.setHeader("content-type", "application/x-ndjson");
+			const line = (obj: unknown) => res.write(`${JSON.stringify(obj)}\n`);
 			try {
-				send(200, await runAgent(text, complete));
+				const result = await runAgent(text, complete, {
+					onStep: (step) => line({ step }),
+				});
+				line({ result });
 			} catch (e) {
-				send(502, { error: `model call failed: ${(e as Error).message}` });
+				line({ error: `model call failed: ${(e as Error).message}` });
 			}
+			res.end();
 		});
 	},
 };

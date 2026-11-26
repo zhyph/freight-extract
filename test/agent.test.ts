@@ -61,7 +61,7 @@ const reply = (...calls: [string, unknown][]): ChatCompletion =>
 // Replays scripted replies and keeps a copy of what the agent sent each turn.
 function scripted(...replies: ChatCompletion[]) {
 	const sent: ChatCompletionMessageParam[][] = [];
-	const complete: Complete = async (messages) => {
+	const complete: Complete = async ({ messages }) => {
 		sent.push(structuredClone(messages));
 		const next = replies.shift();
 		if (!next) throw new Error("script exhausted");
@@ -84,7 +84,7 @@ describe("runAgent", () => {
 			),
 			reply(["submit_extraction", valid]),
 		);
-		const result = await runAgent("doc", complete);
+		const result = await runAgent("doc", complete, { route: false });
 
 		expect(result.ok).toBe(true);
 		expect(result.data).toEqual(valid);
@@ -108,7 +108,7 @@ describe("runAgent", () => {
 			reply(["submit_extraction", wrongDates]),
 			reply(["submit_extraction", valid]),
 		);
-		const result = await runAgent("doc", complete);
+		const result = await runAgent("doc", complete, { route: false });
 
 		expect(result.ok).toBe(true);
 		expect(result.validationFailures).toBe(1);
@@ -126,7 +126,7 @@ describe("runAgent", () => {
 		const { complete } = scripted(
 			...Array.from({ length: 3 }, () => reply(["submit_extraction", bad])),
 		);
-		const result = await runAgent("doc", complete);
+		const result = await runAgent("doc", complete, { route: false });
 
 		expect(result.ok).toBe(false);
 		expect(result.data).toBeNull();
@@ -141,7 +141,7 @@ describe("runAgent", () => {
 			reply(),
 			reply(["submit_extraction", valid]),
 		);
-		const result = await runAgent("doc", complete);
+		const result = await runAgent("doc", complete, { route: false });
 
 		expect(result.ok).toBe(true);
 		expect(sent[1]?.at(-1)).toEqual({
@@ -158,11 +158,66 @@ describe("runAgent", () => {
 			),
 			reply(["submit_extraction", valid]),
 		);
-		const result = await runAgent("doc", complete);
+		const result = await runAgent("doc", complete, { route: false });
 
 		expect(result.ok).toBe(true);
 		const [convert, unknown] = toolMessages(sent[1]);
 		expect(convert.error).toMatch(/Unsupported currency/);
 		expect(unknown.error).toBe("unknown tool no_such_tool");
+	});
+
+	it("routes on the classification and records it as the first step", async () => {
+		const classifyReply = {
+			choices: [
+				{
+					index: 0,
+					finish_reason: "stop",
+					message: {
+						role: "assistant",
+						refusal: null,
+						content: '{"documentType":"bill_of_lading","language":"en"}',
+					},
+				},
+			],
+		} as unknown as ChatCompletion;
+		const { complete, sent } = scripted(
+			classifyReply,
+			reply(["submit_extraction", valid]),
+		);
+		const steps: string[] = [];
+		const result = await runAgent("doc", complete, {
+			onStep: (s) => steps.push(`${s.turn}:${s.kind}`),
+		});
+
+		expect(result.ok).toBe(true);
+		expect(result.classification).toEqual({
+			documentType: "bill_of_lading",
+			language: "en",
+		});
+		expect(steps).toEqual(["1:classify", "2:extract"]);
+		// The extraction prompt carries the bill-of-lading guidance.
+		expect(sent[1]?.[0]?.content).toMatch(/shipped-on-board/);
+	});
+
+	it("extracts without routing when the classification is unusable", async () => {
+		const junk = {
+			choices: [
+				{
+					index: 0,
+					finish_reason: "stop",
+					message: { role: "assistant", refusal: null, content: "not json" },
+				},
+			],
+		} as unknown as ChatCompletion;
+		const { complete, sent } = scripted(
+			junk,
+			reply(["submit_extraction", valid]),
+		);
+		const result = await runAgent("doc", complete);
+
+		expect(result.ok).toBe(true);
+		expect(result.classification).toBeNull();
+		expect(result.steps[0]?.toolCalls[0]?.isError).toBe(true);
+		expect(sent[1]?.[0]?.content).not.toMatch(/classified as/);
 	});
 });

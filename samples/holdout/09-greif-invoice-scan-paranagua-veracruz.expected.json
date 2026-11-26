@@ -1,0 +1,24 @@
+{
+	"documentType": "invoice",
+	"shipper": {
+		"name": "Greif Embalagens"
+	},
+	"consignee": {
+		"name": "Van Leer Mexicana"
+	},
+	"portOfDischarge": {
+		"code": "MXVER"
+	},
+	"departureDate": null,
+	"arrivalDate": null,
+	"cargo": {
+		"packages": null,
+		"grossWeightKg": 17783.23,
+		"netWeightKg": 16416.64
+	},
+	"total": {
+		"amount": 95850.05,
+		"currency": "USD"
+	},
+	"totalUsd": 95850.05
+}

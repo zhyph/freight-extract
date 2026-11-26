@@ -1,7 +1,7 @@
 {
   "id": "03-us-invoice-pounds",
   "model": "freight-qwen",
-  "recordedAt": "2026-11-26T16:02:02.277Z",
+  "recordedAt": "2026-11-26T16:32:53.393Z",
   "input": "PACIFIC RIM FORWARDING INC.\n1500 Harbor Blvd, Long Beach, CA 90802\n\nINVOICE #PRF-88213                         Invoice Date: 11/03/2026\n\nSHIP FROM: Golden State Almond Growers LLC, 4410 W Shaw Ave, Fresno CA 93722\nSHIP TO:   Kansai Foods Trading K.K., 2-1-3 Minatomirai, Nishi-ku, Yokohama 220-0012, Japan\n\nOrigin port: Port of Los Angeles (San Pedro)\nDestination port: Yokohama\nSailing: 11/09/2026        Est. arrival: 11/24/2026\n\nDescription: Shelled almonds, 1,200 cartons (50 lb each), 2x40' reefer\nGross wt: 63,840 LBS       Net wt: 60,000 LBS\n\nLINE  DESCRIPTION                        QTY   RATE         AMOUNT\n1     Ocean freight 40' RF               2     1,425.00     2,850.00\n2     Reefer genset surcharge            2        95.00       190.00\n3     Chassis usage                      2        42.25        84.50\n4     AMS filing                         1        35.00        35.00\n5     Canadian transit docs (Vancouver)  1    CAD 150.00    billed separately in CAD\n                                                TOTAL USD    3,159.50\n",
   "result": {
     "ok": true,
@@ -14,7 +14,7 @@
       },
       "consignee": {
         "name": "Kansai Foods Trading K.K.",
-        "address": "2-1-3 Minatomirai, Nishi-ku, Yokohama 220-0012, Japan",
+        "address": "2-1-3 Minatomirai, Nishi-ku, Yokohama 220-0012",
         "country": "JP"
       },
       "portOfLoading": {
@@ -25,13 +25,13 @@
         "code": "JPYOK",
         "name": "Yokohama"
       },
-      "departureDate": "2026-11-09",
+      "departureDate": "2026-09-11",
       "arrivalDate": "2026-11-24",
       "cargo": {
-        "description": "Shelled almonds",
+        "description": "Shelled almonds, 1,200 cartons (50 lb each), 2x40' reefer",
         "packages": 1200,
-        "grossWeightKg": 28957.5,
-        "netWeightKg": 27215.5
+        "grossWeightKg": 28957.54,
+        "netWeightKg": 27215.54
       },
       "charges": [
         {
@@ -66,32 +66,58 @@
       },
       "totalUsd": 3159.5,
       "notes": [
-        "Date format assumed MM/DD/YYYY based on US company context: Invoice Date 2026-11-03, Sailing 2026-11-09, Arrival 2026-11-24",
-        "Transit time of 15 days from LA to Yokohama is shorter than typical ocean freight (usually 3-4 weeks), but used as stated in document",
-        "Canadian transit docs charge billed separately in CAD as noted in document"
+        "Invoice date 11/03/2026 interpreted as MM/DD/YYYY (March 11, 2026) based on US sender",
+        "Sailing date 11/09/2026 interpreted as MM/DD/YYYY (September 11, 2026)",
+        "Arrival date 11/24/2026 interpreted as MM/DD/YYYY (November 24, 2026) - day 24 confirms US format",
+        "Weights converted from lbs to kg: 63,840 lbs = 28,957.54 kg, 60,000 lbs = 27,215.54 kg",
+        "Canadian transit docs charged in CAD but billed separately per line item"
       ]
+    },
+    "classification": {
+      "documentType": "invoice",
+      "language": "en"
     },
     "validationFailures": 0,
     "steps": [
       {
         "turn": 1,
-        "ms": 20505,
-        "reasoning": "Let me analyze this invoice document step by step:\n\n1. **Document Type**: This is clearly an INVOICE (Invoice #PRF-88213)\n\n2. **Shipper**: \n   - Name: Golden State Almond Growers LLC\n   - Address: 4410 W Shaw Ave, Fresno CA 93722\n   - Country: US (CA is California, USA)\n\n3. **Consignee**:\n   - Name: Kansai Foods Trading K.K.\n   - Address: 2-1-3 Minatomirai, Nishi-ku, Yokohama 220-0012, Japan\n   - Country: JP (Japan)\n\n4. **Ports**:\n   - Origin port: Port of Los Angeles (San Pedro) - Need to lookup UN/LOCODE\n   - Destination port: Yokohama - Need to lookup UN/LOCODE\n\n5. **Dates**:\n   - Invoice Date: 11/03/2026 - This is ambiguous. Could be MM/DD/YYYY or DD/MM/YYYY. Given it's an invoice from US company (Golden State Almond Growers LLC in California), and the format uses slashes, I'll assume MM/DD/YYYY = March 11, 2026\n   - Sailing: 11/09/2026 - Again ambiguous. Could be September 11 or November 9. Given it's after invoice date (March 11), and typical shipping schedules, I'll assume MM/DD/YYYY = September 11, 2026\n   - Est. arrival: 11/24/2026 - Again ambiguous. Could be November 24 or December 24. Given it's after sailing date (September 11), and typical Pacific shipping time (~3-4 weeks), I'll assume MM/DD/YYYY = November 24, 2026\n\n   Wait, let me reconsider. The invoice date is 11/03/2026. In US format this would be November 3, 2026. But the sailing is 11/09/2026 which would be November 9, 2026 - that's only 6 days later for ocean freight? That seems too short.\n   \n   Let me try European format: 11/03/2026 = March 11, 2026. Sailing 11/09/2026 = September 11, 2026 (8 months later? That's too long).\n   \n   Actually, looking at the context - this is a US company (Golden State Almond Growers LLC in California), so they likely use MM/DD/YYYY format. So:\n   - Invoice Date: 11/03/2026 = November 3, 2026\n   - Sailing: 11/09/2026 = November 9, 2026 (6 days later - seems too short for ocean freight)\n   \n   Hmm, this is confusing. Let me think about the transit time. From Los Angeles to Yokohama typically takes about 3-4 weeks. If sailing is 11/09/2026 and arrival is 11/24/2026, that's only 15 days - still seems short but possible for express shipping.\n   \n   Actually, I should note this ambiguity in my notes. Let me assume MM/DD/YYYY format since it's a US company:\n   - Invoice Date: 2026-11-03\n   - Sailing: 2026-11-09\n   - Arrival: 2026-11-24\n\nI'll proceed with these dates, keeping in mind the potential format ambiguity. The short transit time might indicate a specialized shipping arrangement or express service.\n\nThe cargo details involve 1,200 cartons of shelled almonds, each weighing 50 pounds, totaling 63,840 pounds gross weight and 60,000 pounds net weight. I'll need to convert these measurements carefully for the final documentation.\n\nThe invoice includes multiple charges: ocean freight, reefer genset surcharge, chassis usage, AMS filing, and Canadian transit documentation. The total USD amount is $3,159.50, with one charge billed separately in CAD. I'll ensure all line items are accurately captured in the final submission.\n\nI'll verify the port codes for Los Angeles and Yokohama to complete the shipping details precisely.",
+        "kind": "classify",
+        "ms": 593,
+        "text": "{\n  \"documentType\": \"invoice\",\n  \"language\": \"en\"\n}",
+        "toolCalls": [
+          {
+            "name": "classify",
+            "input": "(document)",
+            "output": {
+              "documentType": "invoice",
+              "language": "en"
+            },
+            "isError": false
+          }
+        ],
+        "tokens": {
+          "prompt": 426,
+          "completion": 21
+        }
+      },
+      {
+        "turn": 2,
+        "kind": "extract",
+        "ms": 11406,
+        "reasoning": "Let me analyze this invoice document step by step:\n\n1. **Document Type**: Invoice (already classified as invoice)\n\n2. **Shipper**: Golden State Almond Growers LLC, 4410 W Shaw Ave, Fresno CA 93722\n   - Country: US (CA is California, USA)\n\n3. **Consignee**: Kansai Foods Trading K.K., 2-1-3 Minatomirai, Nishi-ku, Yokohama 220-0012, Japan\n   - Country: JP (Japan)\n\n4. **Ports**:\n   - Origin port: Port of Los Angeles (San Pedro) - need to lookup UN/LOCODE\n   - Destination port: Yokohama - need to lookup UN/LOCODE\n\n5. **Dates**:\n   - Invoice Date: 11/03/2026 - This is US format (MM/DD/YYYY), so March 11, 2026\n   - Sailing: 11/09/2026 - September 11, 2026 (US format)\n   - Est. arrival: 11/24/2026 - November 24, 2026 (US format, since 24 > 12, this must be DD/MM or MM/DD but with day > 12)\n   \n   Wait, let me reconsider. The invoice date is 11/03/2026. In US format, this would be November 3, 2026. But the sailing date is 11/09/2026 (November 9, 2026) and arrival is 11/24/2026 (November 24, 2026). That doesn't make sense - you can't sail after the invoice date if it's November.\n   \n   Actually, looking at this more carefully: If 11/03/2026 is MM/DD/YYYY format, that's March 11, 2026. Then sailing on 11/09/2026 would be September 11, 2026 (MM/DD), and arrival on 11/24/2026 would be November 24, 2026. That makes sense - about 2 months transit time.\n   \n   I'll verify the port codes systematically. Los Angeles has UN/LOCODE USLAX, while Yokohama is JYOK. The invoice details show a shipment of shelled almonds in 1,200 cartons, with specific weight measurements and freight charges totaling $3,159.50 USD.\n\n   I'll carefully examine the date formats to ensure accurate interpretation of the shipping timeline.",
         "toolCalls": [
           {
             "name": "lookup_port",
             "input": {
-              "query": "Los Angeles"
+              "query": "Los Angeles",
+              "country": "US"
             },
             "output": {
               "matches": [
                 {
                   "code": "USLAX",
                   "name": "Los Angeles",
-                  "country": "US",
-                  "aliases": [
-                    "San Pedro"
-                  ]
+                  "country": "US"
                 }
               ]
             },
@@ -100,13 +126,19 @@
           {
             "name": "lookup_port",
             "input": {
-              "query": "Yokohama"
+              "query": "Yokohama",
+              "country": "JP"
             },
             "output": {
               "matches": [
                 {
                   "code": "JPYOK",
                   "name": "Yokohama",
+                  "country": "JP"
+                },
+                {
+                  "code": "JPNGI",
+                  "name": "Neghishi/Yokohama",
                   "country": "JP"
                 }
               ]
@@ -115,14 +147,15 @@
           }
         ],
         "tokens": {
-          "prompt": 2473,
-          "completion": 1065
+          "prompt": 2633,
+          "completion": 697
         }
       },
       {
-        "turn": 2,
-        "ms": 14120,
-        "reasoning": "Good, I have the port codes:\n- Los Angeles (San Pedro): USLAX\n- Yokohama: JPYOK\n\nNow let me analyze the document more carefully:\n\n1. Document Type: invoice\n\n2. Shipper:\n   - Name: Golden State Almond Growers LLC\n   - Address: 4410 W Shaw Ave, Fresno CA 93722\n   - Country: US (CA is California, USA)\n\n3. Consignee:\n   - Name: Kansai Foods Trading K.K.\n   - Address: 2-1-3 Minatomirai, Nishi-ku, Yokohama 220-0012, Japan\n   - Country: JP (Japan)\n\n4. Ports:\n   - Port of Loading: USLAX (Los Angeles/San Pedro)\n   - Port of Discharge: JPYOK (Yokohama)\n\n5. Dates - This is the tricky part. The document uses 11/03/2026, 11/09/2026, 11/24/2026 format.\n   - Since this is a US company (Golden State Almond Growers LLC in California), they likely use MM/DD/YYYY format\n   - Invoice Date: 11/03/2026 = November 3, 2026 → 2026-11-03\n   - Sailing: 11/09/2026 = November 9, 2026 → 2026-11-09\n   - Arrival: 11/24/2026 = November 24, 2026 → 2026-11-24\n   \n   However, I should note that the transit time from Nov 9 to Nov 24 is only 15 days, which seems short for ocean freight from LA to Yokohama (typically 3-4 weeks). But I'll use what's stated.\n\n6. Cargo:\n   - Description: Shelled almonds\n   - Packages: 1,200 cartons → 1200 packages\n   - Gross Weight: 63,840 LBS → need to convert to kg (1 lb = 0.45359237 kg)\n     - 63,840 × 0.45359237 = 28,957.5 kg (approximately)\n   - Net Weight: 60,000 LBS → need to convert to kg\n     - 60,000 × 0.45359237 = 27,215.5 kg (approximately)\n\nI'll calculate the precise weight conversions for the cargo details, ensuring accurate documentation of the almond shipment's specifications.\n\nThe invoice includes multiple charges with varying currencies and amounts. I'll track each line item carefully, noting the USD total and identifying any non-USD transactions that require separate handling.\n\nThe Canadian transit documentation charge stands out as billed separately in CAD, which means it won't be included in the primary USD calculation. This requires careful tracking to ensure accurate financial reporting.",
+        "turn": 3,
+        "kind": "extract",
+        "ms": 11821,
+        "reasoning": "Good, I have the port codes:\n- Los Angeles: USLAX\n- Yokohama: JYOK (the main one)\n\nNow let me analyze the document more carefully:\n\n1. **Shipper**: Golden State Almond Growers LLC, 4410 W Shaw Ave, Fresno CA 93722\n   - Country: US (CA is California, USA)\n\n2. **Consignee**: Kansai Foods Trading K.K., 2-1-3 Minatomirai, Nishi-ku, Yokohama 220-0012, Japan\n   - Country: JP\n\n3. **Dates**:\n   - Invoice Date: 11/03/2026 - US format (MM/DD/YYYY) = March 11, 2026\n   - Sailing: 11/09/2026 - MM/DD/YYYY = September 11, 2026\n   - Est. arrival: 11/24/2026 - MM/DD/YYYY = November 24, 2026\n   \n   Wait, I need to reconsider. The invoice date is 11/03/2026. If this is US format (MM/DD), that's March 11, 2026. But the sailing date is 11/09/2026 which would be September 11, 2026 - that's about 6 months later, which seems too long for ocean freight.\n   \n   Actually, looking at the arrival date: 11/24/2026. If this is MM/DD, that's November 24, 2026. From September 11 to November 24 is about 2 months (89 days), which is reasonable for ocean freight from LA to Yokohama.\n   \n   So the format is MM/DD/YYYY:\n   - Invoice Date: 11/03/2026 = March 11, 2026\n   - Sailing: 11/09/2026 = September 11, 2026 (departure date)\n   - Est. arrival: 11/24/2026 = November 24, 2026 (arrival date)\n\nI'm noticing a potential discrepancy with the invoice date. The sailing date seems unusually far in the future compared to the invoice date. I'll need to verify this carefully and consider if there's any additional context that might explain this timeline.\n\nThe cargo details look consistent: 1,200 cartons of shelled almonds, each weighing 50 pounds, with a total gross weight of 63,840 pounds and net weight of 60,000 pounds. The freight charges appear to be calculated in USD, with a total of $3,159.50.\n\nI'll proceed with converting the total amount to ensure accuracy, using the specified conversion parameters.",
         "toolCalls": [
           {
             "name": "convert_currency",
@@ -140,14 +173,15 @@
           }
         ],
         "tokens": {
-          "prompt": 3603,
-          "completion": 769
+          "prompt": 3410,
+          "completion": 719
         }
       },
       {
-        "turn": 3,
-        "ms": 24752,
-        "reasoning": "Good, the totalUsd is 3159.5 (same as stated since it's already in USD).\n\nNow let me calculate the weight conversions:\n- Gross Weight: 63,840 LBS × 0.45359237 = 28,957.5 kg\n- Net Weight: 60,000 LBS × 0.45359237 = 27,215.5 kg\n\nLet me do the math more precisely:\n63,840 × 0.45359237 = 28,957.5 (approximately)\nActually: 63840 * 0.45359237 = 28957.519... ≈ 28957.5 kg\n\n60,000 × 0.45359237 = 27,215.54424 ≈ 27215.5 kg\n\nNow let me prepare the submit_extraction call:\n\n- documentType: \"invoice\"\n- shipper: {name: \"Golden State Almond Growers LLC\", address: \"4410 W Shaw Ave, Fresno CA 93722\", country: \"US\"}\n- consignee: {name: \"Kansai Foods Trading K.K.\", address: \"2-1-3 Minatomirai, Nishi-ku, Yokohama 220-0012, Japan\", country: \"JP\"}\n- portOfLoading: {code: \"USLAX\", name: \"Los Angeles\"}\n- portOfDischarge: {code: \"JPYOK\", name: \"Yokohama\"}\n- departureDate: \"2026-11-09\" (assuming MM/DD/YYYY format)\n- arrivalDate: \"2026-11-24\" (assuming MM/DD/YYYY format)\n- cargo: {description: \"Shelled almonds\", packages: 1200, grossWeightKg: 28957.5, netWeightKg: 27215.5}\n- charges: array of charge objects\n- total: {amount: 3159.5, currency: \"USD\"}\n- totalUsd: 3159.5\n- notes: explaining the date format assumption\n\nWait, I need to reconsider the dates. The document says:\n- Invoice Date: 11/03/2026\n\n\n- Sailing: 11/09/2026\n- Est. arrival: 11/24/2026\n\nI'm uncertain about the date format. The US company context suggests MM/DD/YYYY, but the short transit time raises questions. I'll note this ambiguity in my documentation and proceed with the assumption of MM/DD/YYYY format.\n\nThe charges include multiple line items with varying currencies and amounts. I'll carefully track each charge's details, ensuring accurate representation in the final submission.",
+        "turn": 4,
+        "kind": "extract",
+        "ms": 21126,
+        "reasoning": "Good, the total in USD is 3159.50.\n\nNow let me compile all the data for submit_extraction:\n\n- documentType: \"invoice\"\n- shipper: {\"name\": \"Golden State Almond Growers LLC\", \"address\": \"4410 W Shaw Ave, Fresno CA 93722\", \"country\": \"US\"}\n- consignee: {\"name\": \"Kansai Foods Trading K.K.\", \"address\": \"2-1-3 Minatomirai, Nishi-ku, Yokohama 220-0012\", \"country\": \"JP\"}\n- portOfLoading: {\"code\": \"USLAX\", \"name\": \"Los Angeles\"}\n- portOfDischarge: {\"code\": \"JPYOK\", \"name\": \"Yokohama\"}\n- departureDate: \"2026-09-11\" (Sailing date)\n- arrivalDate: \"2026-11-24\" (Est. arrival date)\n- cargo: {\"description\": \"Shelled almonds, 1,200 cartons (50 lb each), 2x40' reefer\", \"packages\": 1200, \"grossWeightKg\": 63840 * 0.45359237 = 28957.5 kg, \"netWeightKg\": 60000 * 0.45359237 = 27215.54 kg}\n- charges: array of charge objects\n- total: {\"amount\": 3159.5, \"currency\": \"USD\"}\n- totalUsd: 3159.5 (already converted)\n- notes: I need to note the date format assumption\n\nLet me calculate the weights in kg:\n- Gross wt: 63,840 lbs * 0.45359237 = 28,957.5 kg (approximately)\n- Net wt: 60,000 lbs * 0.45359237 = 27,215.54 kg (approximately)\n\nActually let me be more precise:\n63840 * 0.45359237 = 28957.542... \n60000 * 0.45359237 = 27215.5422...\n\nLet me round to reasonable precision:\n- GrossWeightKg: 28957.54\n\n\n- NetWeightKg: 27215.54\n\nI'll carefully document the date conversion assumptions, noting the US MM/DD/YYYY format for invoice and shipping dates. The charges include ocean freight, reefer genset surcharge, chassis usage, AMS filing, and Canadian transit documentation.",
         "toolCalls": [
           {
             "name": "submit_extraction",
@@ -159,7 +193,7 @@
                 "name": "Golden State Almond Growers LLC"
               },
               "consignee": {
-                "address": "2-1-3 Minatomirai, Nishi-ku, Yokohama 220-0012, Japan",
+                "address": "2-1-3 Minatomirai, Nishi-ku, Yokohama 220-0012",
                 "country": "JP",
                 "name": "Kansai Foods Trading K.K."
               },
@@ -171,12 +205,12 @@
                 "code": "JPYOK",
                 "name": "Yokohama"
               },
-              "departureDate": "2026-11-09",
+              "departureDate": "2026-09-11",
               "arrivalDate": "2026-11-24",
               "cargo": {
-                "description": "Shelled almonds",
-                "grossWeightKg": 28957.5,
-                "netWeightKg": 27215.5,
+                "description": "Shelled almonds, 1,200 cartons (50 lb each), 2x40' reefer",
+                "grossWeightKg": 28957.54,
+                "netWeightKg": 27215.54,
                 "packages": 1200
               },
               "charges": [
@@ -212,9 +246,11 @@
               },
               "totalUsd": 3159.5,
               "notes": [
-                "Date format assumed MM/DD/YYYY based on US company context: Invoice Date 2026-11-03, Sailing 2026-11-09, Arrival 2026-11-24",
-                "Transit time of 15 days from LA to Yokohama is shorter than typical ocean freight (usually 3-4 weeks), but used as stated in document",
-                "Canadian transit docs charge billed separately in CAD as noted in document"
+                "Invoice date 11/03/2026 interpreted as MM/DD/YYYY (March 11, 2026) based on US sender",
+                "Sailing date 11/09/2026 interpreted as MM/DD/YYYY (September 11, 2026)",
+                "Arrival date 11/24/2026 interpreted as MM/DD/YYYY (November 24, 2026) - day 24 confirms US format",
+                "Weights converted from lbs to kg: 63,840 lbs = 28,957.54 kg, 60,000 lbs = 27,215.54 kg",
+                "Canadian transit docs charged in CAD but billed separately per line item"
               ]
             },
             "output": {
@@ -224,11 +260,11 @@
           }
         ],
         "tokens": {
-          "prompt": 4415,
-          "completion": 1277
+          "prompt": 4172,
+          "completion": 1334
         }
       }
     ],
-    "totalMs": 59377
+    "totalMs": 44950
   }
 }

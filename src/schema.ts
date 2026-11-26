@@ -32,21 +32,23 @@ const Port = z.object({
 	name: z.string(),
 });
 
+export const DocumentType = z.enum([
+	"invoice",
+	"booking_confirmation",
+	"bill_of_lading",
+	"quote",
+	"other",
+]);
+
 const Money = z.object({ amount: z.number(), currency: Currency });
 
 export const Extraction = z
 	.object({
-		documentType: z.enum([
-			"invoice",
-			"booking_confirmation",
-			"bill_of_lading",
-			"quote",
-			"other",
-		]),
-		shipper: Party,
-		consignee: Party,
-		portOfLoading: Port,
-		portOfDischarge: Port,
+		documentType: DocumentType,
+		shipper: Party.nullable(),
+		consignee: Party.nullable(),
+		portOfLoading: Port.nullable(),
+		portOfDischarge: Port.nullable(),
 		departureDate: IsoDate.nullable(),
 		arrivalDate: IsoDate.nullable(),
 		cargo: z.object({

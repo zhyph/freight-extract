@@ -1,0 +1,11 @@
+{
+	"documentType": "invoice",
+	"shipper": { "name": "Incap" },
+	"consignee": { "name": null },
+	"portOfDischarge": { "code": "NLRTM" },
+	"departureDate": null,
+	"arrivalDate": null,
+	"cargo": { "packages": 23 },
+	"total": { "amount": 114942.0, "currency": "USD" },
+	"totalUsd": 114942.0
+}

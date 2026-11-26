@@ -40,6 +40,7 @@ LLM_BASE_URL=https://api.groq.com/openai/v1 LLM_API_KEY=... LLM_MODEL=<model> np
 ## Tests
 
 `test/agent.test.ts` drives the loop with scripted model replies:
+
 - the happy path
 - a business-rule rejection whose error text must reach the model and be fixed on retry
 - giving up after repeated failures

@@ -1,0 +1,11 @@
+{
+	"documentType": "bill_of_lading",
+	"shipper": { "name": "Example Pte" },
+	"consignee": { "name": "Car Company UK" },
+	"portOfLoading": { "code": "SGSIN" },
+	"departureDate": "2018-08-03",
+	"arrivalDate": null,
+	"cargo": { "packages": 1, "grossWeightKg": 1258, "netWeightKg": null },
+	"total": null,
+	"totalUsd": null
+}

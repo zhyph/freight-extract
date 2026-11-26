@@ -1,2 +1,5 @@
 node_modules
 dist
+# Held-out docs without a licence: keep local, re-fetch from SOURCES.md
+samples/holdout/0[5-9]-*.txt
+samples/holdout/10-*.txt

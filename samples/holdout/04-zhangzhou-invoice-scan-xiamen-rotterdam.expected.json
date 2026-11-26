@@ -1,0 +1,11 @@
+{
+	"documentType": "invoice",
+	"shipper": { "name": "Zhangzhou Weiping" },
+	"consignee": { "name": null },
+	"portOfDischarge": { "code": "NLRTM" },
+	"departureDate": null,
+	"arrivalDate": null,
+	"cargo": { "packages": 8, "grossWeightKg": null, "netWeightKg": null },
+	"total": { "amount": 13737.0, "currency": "USD" },
+	"totalUsd": 13737.0
+}

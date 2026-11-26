@@ -66,7 +66,12 @@ describe("Extraction business rules", () => {
 describe("tools", () => {
 	it("finds ports by accented name, alias and code", () => {
 		expect(lookupPort("Paranaguá").map((p) => p.code)).toEqual(["BRPNG"]);
-		expect(lookupPort("JNPT").map((p) => p.code)).toEqual(["INNSA"]);
+		expect(lookupPort("Nhava Sheva").map((p) => p.code)).toEqual(["INNSA"]);
+		expect(lookupPort("Port of Santos", "BR")[0]?.code).toBe("BRSSZ");
+		expect(lookupPort("Valencia", "VE").map((p) => p.country)).not.toContain(
+			"ES",
+		);
+		expect(lookupPort("Valencia", "ES")[0]?.code).toBe("ESVLC");
 		expect(lookupPort("usnyc").map((p) => p.code)).toEqual(["USNYC"]);
 		expect(lookupPort("Atlantis")).toEqual([]);
 	});

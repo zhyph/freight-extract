@@ -1,11 +1,12 @@
 import OpenAI from "openai";
 import type {
 	ChatCompletion,
+	ChatCompletionCreateParamsNonStreaming,
 	ChatCompletionMessageParam,
 	ChatCompletionTool,
 } from "openai/resources/chat/completions";
 import { type ZodType, z } from "zod";
-import { Extraction } from "./schema";
+import { DocumentType, Extraction } from "./schema";
 import {
 	ConvertCurrencyInput,
 	convertCurrency,
@@ -13,10 +14,11 @@ import {
 	lookupPort,
 } from "./tools";
 
-export type Complete = (
-	messages: ChatCompletionMessageParam[],
-	tools: ChatCompletionTool[],
-) => Promise<ChatCompletion>;
+export type CompleteParams = Pick<
+	ChatCompletionCreateParamsNonStreaming,
+	"messages" | "tools" | "response_format" | "reasoning_effort" | "max_tokens"
+>;
+export type Complete = (params: CompleteParams) => Promise<ChatCompletion>;
 
 export type ToolCallTrace = {
 	name: string;
@@ -26,30 +28,35 @@ export type ToolCallTrace = {
 };
 export type Step = {
 	turn: number;
+	kind: "classify" | "extract";
 	ms: number;
 	reasoning?: string;
 	text?: string;
 	toolCalls: ToolCallTrace[];
 	tokens?: { prompt: number; completion: number };
 };
+export type Classification = z.infer<typeof Classification>;
 export type AgentResult = {
 	ok: boolean;
 	data: Extraction | null;
+	classification: Classification | null;
 	validationFailures: number;
 	steps: Step[];
 	totalMs: number;
 	error?: string;
 };
 
+export const defaultModel = () => process.env.LLM_MODEL ?? "freight-qwen";
+
 // Any OpenAI-compatible endpoint: local Ollama by default, or a free hosted tier via env.
 export function openAICompatible(
 	baseURL = process.env.LLM_BASE_URL ?? "http://localhost:11434/v1",
-	model = process.env.LLM_MODEL ?? "freight-qwen",
+	model = defaultModel(),
 	apiKey = process.env.LLM_API_KEY ?? "ollama",
 ): Complete {
 	const client = new OpenAI({ baseURL, apiKey });
-	return (messages, tools) =>
-		client.chat.completions.create({ model, messages, tools, temperature: 0 });
+	return (params) =>
+		client.chat.completions.create({ model, temperature: 0, ...params });
 }
 
 const SYSTEM = `You extract structured data from freight documents (invoices, booking confirmations, bills of lading, quotes, emails).
@@ -57,12 +64,31 @@ const SYSTEM = `You extract structured data from freight documents (invoices, bo
 Rules:
 - Call lookup_port for every port to get its UN/LOCODE. Never guess a code.
 - Weights go in kg. 1 lb = 0.45359237 kg, 1 t = 1000 kg.
-- Dates go in YYYY-MM-DD. Read DD/MM vs MM/DD from context (sender country, other dates) and say what you assumed in notes. If only a transit time is given, add it to the departure date.
+- Dates go in YYYY-MM-DD. Read DD/MM vs MM/DD from context (sender country, other dates) and say what you assumed in notes. One date whose second number is above 12 (like 11/24) proves MM/DD for the whole document; US senders usually use MM/DD. If only a transit time is given, add it to the departure date.
 - Numbers may use European format: 1.950,00 means 1950.00.
 - If the document has a total, call convert_currency to fill totalUsd.
 - Use null for anything the document does not state. Never invent values.
 - Ignore quoted older messages in email threads when a newer value exists.
 - When done, call submit_extraction. If it returns errors, fix them and call it again.`;
+
+// Stage 1: a cheap call with no tools that routes the document.
+// Its output picks type-specific guidance for stage 2.
+const Classification = z.object({
+	documentType: DocumentType,
+	language: z.string().describe("ISO 639-1 code of the main language, e.g. en"),
+});
+
+const TYPE_HINTS: Record<z.infer<typeof DocumentType>, string> = {
+	invoice:
+		"Invoices: use the grand total, not a subtotal. Sailing or ETD/ETA dates give departure/arrival.",
+	booking_confirmation:
+		"Booking confirmations: ETD and ETA are departure and arrival. Cut-off and validity dates are not.",
+	bill_of_lading:
+		"Bills of lading: the shipped-on-board or laden-on-board date is the departure date. They rarely state an arrival date; use null then.",
+	quote:
+		"Quotes: use the expected sailing date as departure. Validity dates are not shipment dates.",
+	other: "",
+};
 
 const TOOLS: Record<
 	string,
@@ -71,11 +97,16 @@ const TOOLS: Record<
 	lookup_port: {
 		description: "Find a port's UN/LOCODE by city name or code.",
 		schema: LookupPortInput,
-		run: ({ query }: z.infer<typeof LookupPortInput>) => {
-			const matches = lookupPort(query);
+		run: ({ query, country }: z.infer<typeof LookupPortInput>) => {
+			const matches = lookupPort(query, country).map(
+				({ code, name, country }) => ({ code, name, country }),
+			);
 			return matches.length
 				? { matches }
-				: { matches, hint: "no match; try the city name alone" };
+				: {
+						matches,
+						hint: "no match; try the city name alone, or drop the country",
+					};
 		},
 	},
 	convert_currency: {
@@ -156,18 +187,93 @@ function runTool(
 	}
 }
 
+function stepFrom(
+	res: ChatCompletion,
+	turn: number,
+	kind: Step["kind"],
+	ms: number,
+): Step {
+	const msg = res.choices[0]?.message;
+	return {
+		turn,
+		kind,
+		ms: Math.round(ms),
+		// Ollama and several hosted providers return reasoning outside the OpenAI spec.
+		reasoning:
+			(msg as { reasoning?: string } | undefined)?.reasoning || undefined,
+		text: msg?.content || undefined,
+		toolCalls: [],
+		tokens: res.usage
+			? {
+					prompt: res.usage.prompt_tokens,
+					completion: res.usage.completion_tokens,
+				}
+			: undefined,
+	};
+}
+
+async function classify(
+	document: string,
+	complete: Complete,
+): Promise<{ step: Step; classification: Classification | null }> {
+	const t0 = performance.now();
+	const res = await complete({
+		messages: [
+			{
+				role: "system",
+				content:
+					"Classify this freight document. A forwarded email counts as the type of the document it carries.",
+			},
+			{ role: "user", content: document },
+		],
+		// Routing needs no reasoning: with thinking on, qwen3.5 once spent 16k tokens here.
+		reasoning_effort: "none",
+		max_tokens: 200,
+		response_format: {
+			type: "json_schema",
+			json_schema: {
+				name: "classification",
+				schema: z.toJSONSchema(Classification) as Record<string, unknown>,
+			},
+		},
+	});
+	const step = stepFrom(res, 1, "classify", performance.now() - t0);
+	let parsed: ReturnType<typeof Classification.safeParse> | null = null;
+	try {
+		parsed = Classification.safeParse(JSON.parse(step.text ?? ""));
+	} catch {
+		// unparseable output: fall through and extract without routing
+	}
+	const classification = parsed?.success ? parsed.data : null;
+	step.toolCalls.push({
+		name: "classify",
+		input: "(document)",
+		output: classification ?? {
+			error: "unusable classification, continuing without it",
+		},
+		isError: !classification,
+	});
+	return { step, classification };
+}
+
 export async function runAgent(
 	document: string,
 	complete: Complete,
-	{ maxTurns = 12, maxValidationFailures = 3 } = {},
+	{
+		maxTurns = 12,
+		maxValidationFailures = 3,
+		route = true,
+		onStep = (_step: Step) => {},
+	} = {},
 ): Promise<AgentResult> {
 	const started = performance.now();
-	const messages: ChatCompletionMessageParam[] = [
-		{ role: "system", content: SYSTEM },
-		{ role: "user", content: document },
-	];
 	const steps: Step[] = [];
 	let validationFailures = 0;
+	let classification: Classification | null = null;
+	const record = (step: Step) => {
+		steps.push(step);
+		onStep(step);
+	};
 	const done = (
 		ok: boolean,
 		data: Extraction | null,
@@ -175,37 +281,40 @@ export async function runAgent(
 	): AgentResult => ({
 		ok,
 		data,
+		classification,
 		validationFailures,
 		steps,
 		totalMs: Math.round(performance.now() - started),
 		error,
 	});
 
-	for (let turn = 1; turn <= maxTurns; turn++) {
+	let system = SYSTEM;
+	if (route) {
+		const c = await classify(document, complete);
+		classification = c.classification;
+		record(c.step);
+		const hint = classification && TYPE_HINTS[classification.documentType];
+		if (hint)
+			system += `\n\nThis document was classified as ${classification?.documentType}. ${hint}`;
+	}
+
+	const messages: ChatCompletionMessageParam[] = [
+		{ role: "system", content: system },
+		{ role: "user", content: document },
+	];
+
+	for (let turn = steps.length + 1; turn <= maxTurns; turn++) {
 		const t0 = performance.now();
-		const res = await complete(messages, toolDefs);
+		const res = await complete({ messages, tools: toolDefs });
 		const msg = res.choices[0]?.message;
 		if (!msg) return done(false, null, "model returned no message");
 
-		const step: Step = {
-			turn,
-			ms: Math.round(performance.now() - t0),
-			// Ollama and several hosted providers return reasoning outside the OpenAI spec.
-			reasoning: (msg as { reasoning?: string }).reasoning || undefined,
-			text: msg.content || undefined,
-			toolCalls: [],
-			tokens: res.usage
-				? {
-						prompt: res.usage.prompt_tokens,
-						completion: res.usage.completion_tokens,
-					}
-				: undefined,
-		};
-		steps.push(step);
+		const step = stepFrom(res, turn, "extract", performance.now() - t0);
 		messages.push(msg);
 
 		const calls = (msg.tool_calls ?? []).filter((c) => c.type === "function");
 		if (!calls.length) {
+			record(step);
 			messages.push({
 				role: "user",
 				content: "Call submit_extraction with the extracted data.",
@@ -230,6 +339,7 @@ export async function runAgent(
 				else submitted = parsed as Extraction;
 			}
 		}
+		record(step);
 		if (submitted) return done(true, submitted);
 		if (validationFailures >= maxValidationFailures) {
 			return done(

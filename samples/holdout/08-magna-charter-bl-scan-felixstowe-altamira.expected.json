@@ -1,0 +1,11 @@
+{
+	"documentType": "bill_of_lading",
+	"shipper": { "name": "Permastore" },
+	"consignee": { "name": "Aqua del Guadiana" },
+	"portOfLoading": { "code": "GBFXT" },
+	"portOfDischarge": { "code": "MXATM" },
+	"departureDate": "2008-12-11",
+	"arrivalDate": null,
+	"total": null,
+	"totalUsd": null
+}

@@ -1,0 +1,11 @@
+{
+	"documentType": "invoice",
+	"shipper": { "name": "Exportadora e Importadora Mercurio" },
+	"consignee": { "name": "Tornillos y Similares Jama" },
+	"portOfLoading": { "code": "MXVER" },
+	"portOfDischarge": { "code": null },
+	"departureDate": null,
+	"arrivalDate": null,
+	"total": { "amount": 10000.0, "currency": "USD" },
+	"totalUsd": 10000.0
+}
