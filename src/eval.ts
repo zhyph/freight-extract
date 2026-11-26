@@ -2,8 +2,14 @@
 //   npm run eval                          agent on dev + holdout
 //   npm run eval -- --system baseline     NuExtract single pass + code post-processing
 //   npm run eval -- --set holdout 03      one set, files starting with "03"
-// Agent runs on the dev set also re-record the replay traces in web/traces.
-import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+// Agent runs record traces: dev -> web/traces (replay UI), others -> .eval-traces/.
+import {
+	existsSync,
+	mkdirSync,
+	readdirSync,
+	readFileSync,
+	writeFileSync,
+} from "node:fs";
 import { parseArgs } from "node:util";
 import { defaultModel, openAICompatible, runAgent } from "./agent";
 import { runBaseline } from "./baseline";
@@ -38,6 +44,9 @@ for (const { name: set, dir } of sets) {
 	let retries = 0;
 	let seconds = 0;
 	let valid = 0;
+	// Dev traces feed the replay UI; held-out traces stay local (unlicensed docs).
+	const traceDir = set === "dev" ? "web/traces" : `.eval-traces/${set}`;
+	mkdirSync(traceDir, { recursive: true });
 	console.log(`\n== ${set} (${files.length} docs) · ${system} · ${model}`);
 
 	for (const file of files) {
@@ -50,7 +59,7 @@ for (const { name: set, dir } of sets) {
 		let line: string;
 		if (system === "agent") {
 			const result = await runAgent(input, complete);
-			if (set === "dev") {
+			{
 				const recording = {
 					id,
 					model,
@@ -59,7 +68,7 @@ for (const { name: set, dir } of sets) {
 					result,
 				};
 				writeFileSync(
-					`web/traces/${id}.json`,
+					`${traceDir}/${id}.json`,
 					`${JSON.stringify(recording, null, 2)}\n`,
 				);
 			}

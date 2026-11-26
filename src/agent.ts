@@ -90,6 +90,8 @@ const TYPE_HINTS: Record<z.infer<typeof DocumentType>, string> = {
 	other: "",
 };
 
+const MAX_LOOKUP_MISSES = 3;
+
 const TOOLS: Record<
 	string,
 	{ description: string; schema: ZodType; run: (input: never) => unknown }
@@ -105,7 +107,7 @@ const TOOLS: Record<
 				? { matches }
 				: {
 						matches,
-						hint: "no match; try the city name alone, or drop the country",
+						hint: "no seaport matches. Try the city name alone. Inland places (ICDs, inland cities) have no seaport code: use null for that port.",
 					};
 		},
 	},
@@ -135,8 +137,16 @@ const toolDefs: ChatCompletionTool[] = Object.entries(TOOLS).map(
 	}),
 );
 
+// Echo the offending value: "Invalid ISO date" alone never told the model its
+// date was double-quoted ("\"2018-08-03\""), so it resubmitted the same thing.
 const formatIssues = (e: z.ZodError) =>
-	e.issues.map((i) => `${i.path.join(".") || "(root)"}: ${i.message}`);
+	e.issues.map((i) => {
+		const got =
+			i.input === undefined
+				? ""
+				: ` (got ${JSON.stringify(i.input).slice(0, 80)})`;
+		return `${i.path.join(".") || "(root)"}: ${i.message}${got}`;
+	});
 
 function runTool(
 	name: string,
@@ -161,7 +171,7 @@ function runTool(
 			output: { error: `unknown tool ${name}` },
 			isError: true,
 		};
-	const parsed = tool.schema.safeParse(input);
+	const parsed = tool.schema.safeParse(input, { reportInput: true });
 	if (!parsed.success)
 		return {
 			name,
@@ -269,6 +279,7 @@ export async function runAgent(
 	const started = performance.now();
 	const steps: Step[] = [];
 	let validationFailures = 0;
+	let lookupMisses = 0;
 	let classification: Classification | null = null;
 	const record = (step: Step) => {
 		steps.push(step);
@@ -328,6 +339,19 @@ export async function runAgent(
 				call.function.name,
 				call.function.arguments,
 			);
+			// Lookup budget: small models re-query an unfindable inland place until the
+			// turn limit (seen on real documents), losing the whole extraction.
+			if (
+				trace.name === "lookup_port" &&
+				!trace.isError &&
+				!(trace.output as { matches: unknown[] }).matches.length &&
+				++lookupMisses >= MAX_LOOKUP_MISSES
+			) {
+				trace.output = {
+					matches: [],
+					stop: `${lookupMisses} searches without a match. Stop searching: set the unmatched port to null, mention the place in notes, and call submit_extraction.`,
+				};
+			}
 			step.toolCalls.push(trace);
 			messages.push({
 				role: "tool",

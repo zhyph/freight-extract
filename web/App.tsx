@@ -23,68 +23,103 @@ const samples = Object.fromEntries(
 );
 const recordings: Record<string, Recording> = Object.fromEntries(
 	Object.values(
-		import.meta.glob<Recording>("./traces/*.json", {
+		import.meta.glob<Recording>("./traces/**/*.json", {
 			import: "default",
 			eager: true,
 		}),
 	).map((r) => [r.id, r]),
 );
+// Real documents from the held-out eval set (MIT-licensed ones only) ship as recordings.
+const realDocs = Object.fromEntries(
+	Object.values(recordings)
+		.filter((r) => r.id.startsWith("holdout/"))
+		.map((r) => [r.id, r.input]),
+);
+const docs: Record<string, string> = { ...samples, ...realDocs };
 const LIVE = import.meta.env.DEV;
 const REPLAY_STEP_MS = 700;
 
+const seconds = (ms: number) => `${(ms / 1000).toFixed(1)} s`;
+
 export function App() {
 	const [sampleId, setSampleId] = useState(Object.keys(samples)[0] ?? "");
-	const [text, setText] = useState(samples[sampleId] ?? "");
+	const [text, setText] = useState(docs[sampleId] ?? "");
+	const [steps, setSteps] = useState<Step[]>([]);
 	const [result, setResult] = useState<AgentResult | null>(null);
+	const [replaying, setReplaying] = useState<AgentResult | null>(null);
 	const [source, setSource] = useState("");
-	const [shown, setShown] = useState(0);
 	const [running, setRunning] = useState(false);
 	const [error, setError] = useState("");
 
-	// Replay reveals one turn at a time; live results show at once.
+	// Replay reveals one recorded turn at a time, then the result.
 	useEffect(() => {
-		if (!result || shown >= result.steps.length) return;
-		const t = setTimeout(() => setShown((n) => n + 1), REPLAY_STEP_MS);
+		if (!replaying) return;
+		if (steps.length >= replaying.steps.length) {
+			setResult(replaying);
+			setReplaying(null);
+			return;
+		}
+		const t = setTimeout(
+			() => setSteps(replaying.steps.slice(0, steps.length + 1)),
+			REPLAY_STEP_MS,
+		);
 		return () => clearTimeout(t);
-	}, [result, shown]);
+	}, [replaying, steps]);
 
 	const reset = () => {
+		setSteps([]);
 		setResult(null);
+		setReplaying(null);
 		setError("");
 	};
 
 	const pickSample = (id: string) => {
 		setSampleId(id);
-		setText(samples[id] ?? "");
+		setText(docs[id] ?? "");
 		reset();
 	};
 
 	const replay = () => {
 		const rec = recordings[sampleId];
 		if (!rec) return;
+		reset();
 		setText(rec.input);
-		setError("");
 		setSource(
-			`replay · ${rec.model} · recorded ${rec.recordedAt.slice(0, 10)}`,
+			`Replay of a ${rec.model} run recorded ${rec.recordedAt.slice(0, 10)}`,
 		);
-		setShown(0);
-		setResult(rec.result);
+		setReplaying(rec.result);
 	};
 
+	// The dev endpoint streams NDJSON: {step} per finished turn, then {result} or {error}.
 	const runLive = async () => {
 		reset();
 		setRunning(true);
+		setSource("Live run against the local model");
 		try {
 			const res = await fetch("/api/extract", {
 				method: "POST",
 				headers: { "content-type": "application/json" },
 				body: JSON.stringify({ text }),
 			});
-			const body = await res.json();
-			if (!res.ok) throw new Error(body.error ?? res.statusText);
-			setSource("live");
-			setShown(Number.POSITIVE_INFINITY);
-			setResult(body);
+			if (!res.ok || !res.body) {
+				const body = await res.json().catch(() => ({}));
+				throw new Error(body.error ?? res.statusText);
+			}
+			const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
+			let buffer = "";
+			for (;;) {
+				const { value, done } = await reader.read();
+				if (done) break;
+				buffer += value;
+				const lines = buffer.split("\n");
+				buffer = lines.pop() ?? "";
+				for (const line of lines.filter(Boolean)) {
+					const msg = JSON.parse(line);
+					if (msg.step) setSteps((s) => [...s, msg.step]);
+					if (msg.result) setResult(msg.result);
+					if (msg.error) throw new Error(msg.error);
+				}
+			}
 		} catch (e) {
 			setError((e as Error).message);
 		} finally {
@@ -92,15 +127,23 @@ export function App() {
 		}
 	};
 
-	const upload = async (file: File | undefined) => {
+	const upload = async (input: HTMLInputElement) => {
+		const file = input.files?.[0];
 		if (!file) return;
 		setSampleId("");
 		setText(await file.text());
 		reset();
+		// Let the same file be picked again after editing the textarea.
+		input.value = "";
 	};
 
-	const finished = result && shown >= result.steps.length;
-	const steps = result?.steps.slice(0, shown) ?? [];
+	const working = running || replaying !== null;
+	const turn = steps.length + 1;
+	const status = working
+		? `Agent working on turn ${turn}${replaying ? ` of ${replaying.steps.length}` : ""}…`
+		: result
+			? `Extraction ${result.ok ? "valid" : "failed"} after ${result.steps.length} turns.`
+			: "";
 
 	return (
 		<main>
@@ -114,88 +157,133 @@ export function App() {
 			</header>
 
 			<div className="toolbar">
-				<label>
-					Sample
-					<select value={sampleId} onChange={(e) => pickSample(e.target.value)}>
-						{sampleId === "" && <option value="">(uploaded file)</option>}
-						{Object.keys(samples).map((id) => (
-							<option key={id} value={id}>
-								{id}
-							</option>
-						))}
-					</select>
-				</label>
-				<label className="file">
-					Upload .txt
-					<input
-						type="file"
-						accept=".txt,.eml,text/plain"
-						onChange={(e) => upload(e.target.files?.[0])}
-					/>
-				</label>
-				<span className="spacer" />
-				<button
-					type="button"
-					onClick={replay}
-					disabled={!recordings[sampleId] || running}
-				>
-					Replay recorded run
-				</button>
-				<button
-					type="button"
-					className="primary"
-					onClick={runLive}
-					disabled={!LIVE || running || !text.trim()}
-					title={
-						LIVE
-							? undefined
-							: "Live mode runs against a local model: clone the repo and npm run dev"
-					}
-				>
-					{running ? "Extracting..." : "Run live"}
-				</button>
+				<div className="toolbar-group">
+					<label className="sample">
+						Sample
+						<select
+							value={sampleId}
+							onChange={(e) => pickSample(e.target.value)}
+						>
+							{sampleId === "" && <option value="">(uploaded file)</option>}
+							<optgroup label="Synthetic samples">
+								{Object.keys(samples).map((id) => (
+									<option key={id} value={id}>
+										{id}
+									</option>
+								))}
+							</optgroup>
+							{Object.keys(realDocs).length > 0 && (
+								<optgroup label="Real documents (held-out eval)">
+									{Object.keys(realDocs).map((id) => (
+										<option key={id} value={id}>
+											{id.replace("holdout/", "")}
+										</option>
+									))}
+								</optgroup>
+							)}
+						</select>
+					</label>
+					<label className="button file">
+						<input
+							type="file"
+							accept=".txt,.eml,text/plain"
+							className="visually-hidden"
+							onChange={(e) => upload(e.currentTarget)}
+						/>
+						Upload .txt
+					</label>
+				</div>
+				<div className="toolbar-group">
+					<button
+						type="button"
+						className="button"
+						onClick={replay}
+						disabled={!recordings[sampleId] || running}
+					>
+						Replay recorded run
+					</button>
+					<button
+						type="button"
+						className="button primary"
+						onClick={runLive}
+						disabled={!LIVE || running || !text.trim()}
+						aria-describedby={LIVE ? undefined : "live-hint"}
+					>
+						{running ? "Extracting…" : "Run live"}
+					</button>
+				</div>
 			</div>
+			{!LIVE && (
+				<p id="live-hint" className="hint">
+					Run live needs a local model. Clone the repo and run{" "}
+					<code>npm run dev</code>.
+				</p>
+			)}
 
-			<section className="panes">
-				<div className="pane">
-					<h2>Input</h2>
+			<div className="panes">
+				<section className="pane" aria-labelledby="input-h">
+					<h2 id="input-h">Input</h2>
 					<textarea
+						name="document"
 						value={text}
 						onChange={(e) => {
 							setText(e.target.value);
 							reset();
 						}}
 						spellCheck={false}
-						aria-label="Document text"
+						autoComplete="off"
+						aria-labelledby="input-h"
 					/>
-				</div>
-				<div className="pane">
-					<h2>Extracted JSON</h2>
-					{running && (
+				</section>
+				<section className="pane" aria-labelledby="output-h">
+					<h2 id="output-h">Extracted JSON</h2>
+					{error && (
+						<div className="error" role="alert">
+							<p>
+								<strong>Live run failed.</strong> {error}
+							</p>
+							<p>Check that the local model server is up, then run again.</p>
+						</div>
+					)}
+					{!result && !working && !error && (
 						<p className="muted">
-							Running on the local model. A small model on a consumer GPU takes
-							30-90 s.
+							Pick a sample and replay its recorded run to watch the agent work.
 						</p>
 					)}
-					{error && <p className="error">{error}</p>}
-					{!result && !running && !error && (
-						<p className="muted">Replay a recorded run or run live.</p>
+					<p
+						className={result ? "visually-hidden" : "muted status"}
+						role="status"
+					>
+						{status}
+						{running && " A small local model takes about a minute."}
+					</p>
+					{result && (
+						<div className="result">
+							<Summary result={result} source={source} />
+							<pre className="json" translate="no">
+								{JSON.stringify(result.data, null, 2)}
+							</pre>
+						</div>
 					)}
-					{result && !finished && <p className="muted">Agent working...</p>}
-					{result && finished && <Summary result={result} source={source} />}
-					{result && finished && (
-						<pre className="json">{JSON.stringify(result.data, null, 2)}</pre>
-					)}
-				</div>
-			</section>
+				</section>
+			</div>
 
-			{steps.length > 0 && (
-				<section>
-					<h2>Agent trace</h2>
+			{(steps.length > 0 || working) && (
+				<section aria-labelledby="trace-h">
+					<h2 id="trace-h">Agent trace</h2>
 					<ol className="trace">
-						{steps.map((s) => (
-							<StepCard key={s.turn} step={s} />
+						{steps.map((s, i) => (
+							<StepCard key={s.turn} step={s} previous={steps[i - 1]} />
 						))}
+						{working && (
+							<li className="step" data-outcome="pending">
+								<span className="node" aria-hidden="true" />
+								<div className="step-head">
+									<h3>Turn {turn}</h3>
+									<span className="muted">Waiting for the model…</span>
+								</div>
+							</li>
+						)}
 					</ol>
 				</section>
 			)}
@@ -210,31 +298,63 @@ function Summary({ result, source }: { result: AgentResult; source: string }) {
 	);
 	return (
 		<div className="summary">
-			<span className={`pill ${result.ok ? "ok" : "bad"}`}>
+			<span className={`badge ${result.ok ? "ok" : "bad"}`}>
 				{result.ok ? "Valid" : "Failed"}
 			</span>
-			<span>{result.steps.length} turns</span>
-			<span>
-				{result.validationFailures} validation{" "}
-				{result.validationFailures === 1 ? "retry" : "retries"}
-			</span>
-			<span>{(result.totalMs / 1000).toFixed(1)} s</span>
-			{tokens > 0 && <span>{tokens.toLocaleString()} tokens</span>}
-			<span className="muted">{source}</span>
+			<dl className="metrics">
+				<div>
+					<dt>Turns</dt>
+					<dd>{result.steps.length}</dd>
+				</div>
+				<div>
+					<dt>Validation retries</dt>
+					<dd>{result.validationFailures}</dd>
+				</div>
+				<div>
+					<dt>Time</dt>
+					<dd>{seconds(result.totalMs)}</dd>
+				</div>
+				{tokens > 0 && (
+					<div>
+						<dt>Tokens</dt>
+						<dd>{tokens.toLocaleString()}</dd>
+					</div>
+				)}
+			</dl>
+			<p className="provenance">{source}</p>
 			{result.error && <p className="error">{result.error}</p>}
 		</div>
 	);
 }
 
-function StepCard({ step }: { step: Step }) {
+const submitOf = (step: Step | undefined) =>
+	step?.toolCalls.find((c) => c.name === "submit_extraction");
+
+function StepCard({ step, previous }: { step: Step; previous?: Step }) {
+	const submit = submitOf(step);
+	const outcome = submit
+		? submit.isError
+			? "rejected"
+			: "accepted"
+		: step.toolCalls.some((c) => c.isError)
+			? "error"
+			: step.kind;
+	const retry = submitOf(previous)?.isError === true;
 	return (
-		<li className="step">
+		<li className="step" data-outcome={outcome}>
+			<span className="node" aria-hidden="true" />
 			<div className="step-head">
-				<strong>Turn {step.turn}</strong>
-				<span className="muted">
-					{(step.ms / 1000).toFixed(1)} s
-					{step.tokens &&
-						` · ${step.tokens.prompt} in / ${step.tokens.completion} out`}
+				<h3>Turn {step.turn}</h3>
+				{step.kind === "classify" && <span className="tag">classify</span>}
+				{retry && <span className="tag">retry after rejection</span>}
+				<span className="step-meta">
+					<span>{seconds(step.ms)}</span>
+					{step.tokens && (
+						<>
+							<span>{step.tokens.prompt.toLocaleString()} in</span>
+							<span>{step.tokens.completion.toLocaleString()} out</span>
+						</>
+					)}
 				</span>
 			</div>
 			{step.reasoning && (
@@ -243,7 +363,9 @@ function StepCard({ step }: { step: Step }) {
 					<p className="reasoning">{step.reasoning}</p>
 				</details>
 			)}
-			{step.text && <p>{step.text}</p>}
+			{step.text && step.kind !== "classify" && (
+				<p className="step-text">{step.text}</p>
+			)}
 			{step.toolCalls.length === 0 && (
 				<p className="muted">No tool call. Agent nudged the model to submit.</p>
 			)}
@@ -257,29 +379,42 @@ function StepCard({ step }: { step: Step }) {
 
 function ToolCall({ call }: { call: ToolCallTrace }) {
 	const submit = call.name === "submit_extraction";
+	const state = call.isError ? "bad" : submit ? "ok" : "";
 	const label = submit
 		? call.isError
-			? "rejected, errors sent back to the model"
-			: "accepted"
+			? "Rejected"
+			: "Accepted"
 		: call.isError
-			? "error"
+			? "Error"
 			: "";
 	return (
-		<div className={`call ${call.isError ? "bad" : submit ? "ok" : ""}`}>
+		<div className={`call ${state}`}>
 			<div className="call-head">
-				<code>{call.name}</code>
-				{label && <span>{label}</span>}
+				<code translate="no">{call.name}</code>
+				{label && <span className={`badge ${state}`}>{label}</span>}
+				{submit && call.isError && (
+					<span className="call-note">Errors sent back to the model</span>
+				)}
 			</div>
 			<div className="call-io">
 				<details open={!submit}>
-					<summary>input</summary>
-					<pre>{JSON.stringify(call.input, null, 2)}</pre>
+					<summary>Input</summary>
+					<Value value={call.input} />
 				</details>
 				<details open>
-					<summary>result</summary>
-					<pre>{JSON.stringify(call.output, null, 2)}</pre>
+					<summary>Result</summary>
+					<Value value={call.output} />
 				</details>
 			</div>
 		</div>
+	);
+}
+
+// Plain strings (e.g. the "(document)" placeholder) read better without JSON quotes.
+function Value({ value }: { value: unknown }) {
+	return typeof value === "string" ? (
+		<p className="muted value-text">{value}</p>
+	) : (
+		<pre translate="no">{JSON.stringify(value, null, 2)}</pre>
 	);
 }

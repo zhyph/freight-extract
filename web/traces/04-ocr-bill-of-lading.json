@@ -1,453 +1,350 @@
 {
-  "id": "04-ocr-bill-of-lading",
-  "model": "freight-qwen",
-  "recordedAt": "2026-11-26T16:33:44.427Z",
-  "input": "BILL OF LAD1NG                                   B/L No: ALX2611094\nSHIPPER/EXPORTER\nMOVEIS SERRA GAUCHA IND. E COM. LTDA\nAV. PRES. VARGAS 455  BENTO GONCALVES RS  BRAZIL\nCONSIGNEE\nHUDSON HOME FURNISHINGS CORP\n220 W 34TH ST  NEW YORK NY 10001  USA\nNOTIFY PARTY      SAME AS CONSIGNEE\nVESSEL  CAP SAN LORENZO     VOY 644N\nPORT OF LOAD1NG   BRITJ              PORT OF DISCHARGE   USNYC\nSHIPPED ON BOARD  2O-NOV-2026\nMARKS & NOS     DESCRIPTION OF GOODS                      GROSS WT     MEASUREMENT\nHHF/NY 1-86     86 PKGS WOODEN FURNITURE (DINING SETS)    11 ,340 KGS  58.2 CBM\n                SAID TO CONTAIN 1 X 40HC CONT MSKU 778213-4\nFREIGHT PREPAID AT ITAJAI\nFRETE MARITIMO          BRL   9.850,00\nTAXA THC                BRL   1.120,00\nEMISSAO BL              BRL     350,00\nTOTAL                   BRL  11.32O,00\n",
-  "result": {
-    "ok": true,
-    "data": {
-      "documentType": "bill_of_lading",
-      "shipper": {
-        "name": "MOVEIS SERRA GAUCHA IND. E COM. LTDA",
-        "address": "AV. PRES. VARGAS 455, BENTO GONCALVES RS, BRAZIL",
-        "country": "BR"
-      },
-      "consignee": {
-        "name": "HUDSON HOME FURNISHINGS CORP",
-        "address": "220 W 34TH ST, NEW YORK NY 10001, USA",
-        "country": "US"
-      },
-      "portOfLoading": {
-        "code": "BRITJ",
-        "name": "Itajai"
-      },
-      "portOfDischarge": {
-        "code": "USNYC",
-        "name": "New York"
-      },
-      "departureDate": "2026-11-20",
-      "arrivalDate": null,
-      "cargo": {
-        "description": "86 PKGS WOODEN FURNITURE (DINING SETS)",
-        "packages": 86,
-        "grossWeightKg": 11340,
-        "netWeightKg": null
-      },
-      "charges": [
-        {
-          "description": "Freight Prepaid at Itajai",
-          "amount": 9850,
-          "currency": "BRL"
-        },
-        {
-          "description": "THC Tax",
-          "amount": 1120,
-          "currency": "BRL"
-        },
-        {
-          "description": "Bill of Lading Issuance",
-          "amount": 350,
-          "currency": "BRL"
-        }
-      ],
-      "total": {
-        "amount": 11320,
-        "currency": "BRL"
-      },
-      "totalUsd": 2037.6,
-      "notes": [
-        "Document uses European number format (dot as thousands separator, comma as decimal)",
-        "BRIT in document appears to be typo for BRITJ (Itajai)",
-        "No net weight stated in document"
-      ]
-    },
-    "classification": {
-      "documentType": "bill_of_lading",
-      "language": "Portuguese/English"
-    },
-    "validationFailures": 0,
-    "steps": [
-      {
-        "turn": 1,
-        "kind": "classify",
-        "ms": 713,
-        "text": "{\n  \"documentType\": \"bill_of_lading\",\n  \"language\": \"Portuguese/English\"\n}",
-        "toolCalls": [
-          {
-            "name": "classify",
-            "input": "(document)",
-            "output": {
-              "documentType": "bill_of_lading",
-              "language": "Portuguese/English"
-            },
-            "isError": false
-          }
-        ],
-        "tokens": {
-          "prompt": 375,
-          "completion": 28
-        }
-      },
-      {
-        "turn": 2,
-        "kind": "extract",
-        "ms": 10663,
-        "reasoning": "Let me analyze this bill of lading document step by step:\n\n1. **Document Type**: Bill of Lading (confirmed)\n\n2. **Shipper/Exporter**: \n   - Name: MOVEIS SERRA GAUCHA IND. E COM. LTDA\n   - Address: AV. PRES. VARGAS 455, BENTO GONCALVES RS, BRAZIL\n   - Country: BR (Brazil)\n\n3. **Consignee**:\n   - Name: HUDSON HOME FURNISHINGS CORP\n   - Address: 220 W 34TH ST, NEW YORK NY 10001, USA\n   - Country: US (USA)\n\n4. **Ports**:\n   - Port of Loading: BRIT (need to lookup)\n   - Port of Discharge: USNYC (need to lookup)\n\n5. **Dates**:\n   - Shipped on Board: 20-NOV-2026 (this is the departure date for a bill of lading)\n   - No arrival date stated, so null\n\n6. **Cargo**:\n   - Description: 86 PKGS WOODEN FURNITURE (DINING SETS)\n   - Packages: 86\n   - Gross Weight: 11,340 KGS (European format with comma as decimal separator? No, this looks like 11.340 which in European format would be 11,340 = 11340 kg)\n   - Net Weight: Not stated, so null\n\n7. **Charges**:\n   - Freight Prepaid at Itajai: BRL 9,850.00 (European format: 9.850,00 = 9850.00)\n   - THC Tax: BRL 1,120.00 (European format: 1.120,00 = 1120.00)\n   - Bill of Lading Issuance: BRL 350.00 (European format: 350,00 = 350.00)\n   - Total: BRL 11,320.00 (European format: 11.320,00 = 11320.00)\n\n8. **Total**: BRL 11,320.00 (need to convert to USD)\n\nI need to look up the port codes for BRIT and USNYC to get their proper UN/LOCODEs. I'll also convert the total from BRL to USD using the appropriate conversion rate.",
-        "toolCalls": [
-          {
-            "name": "lookup_port",
-            "input": {
-              "query": "BRIT",
-              "country": "BR"
-            },
-            "output": {
-              "matches": [],
-              "hint": "no match; try the city name alone, or drop the country"
-            },
-            "isError": false
-          },
-          {
-            "name": "lookup_port",
-            "input": {
-              "query": "USNYC",
-              "country": "US"
-            },
-            "output": {
-              "matches": [
-                {
-                  "code": "USNYC",
-                  "name": "New York",
-                  "country": "US"
-                }
-              ]
-            },
-            "isError": false
-          }
-        ],
-        "tokens": {
-          "prompt": 2590,
-          "completion": 666
-        }
-      },
-      {
-        "turn": 3,
-        "kind": "extract",
-        "ms": 1322,
-        "reasoning": "BRIT didn't match - let me try looking up by city name. BRIT is likely \"Brito\" or similar. Let me try \"Brito\" as the city name.",
-        "toolCalls": [
-          {
-            "name": "lookup_port",
-            "input": {
-              "query": "Brito",
-              "country": "BR"
-            },
-            "output": {
-              "matches": [],
-              "hint": "no match; try the city name alone, or drop the country"
-            },
-            "isError": false
-          }
-        ],
-        "tokens": {
-          "prompt": 3315,
-          "completion": 80
-        }
-      },
-      {
-        "turn": 4,
-        "kind": "extract",
-        "ms": 659,
-        "reasoning": "Let me try without the country code.",
-        "toolCalls": [
-          {
-            "name": "lookup_port",
-            "input": {
-              "query": "Brito"
-            },
-            "output": {
-              "matches": [
-                {
-                  "code": "GBBFY",
-                  "name": "Briton Ferry",
-                  "country": "GB"
-                },
-                {
-                  "code": "SIVB9",
-                  "name": "Vremski Britof",
-                  "country": "SI"
-                }
-              ]
-            },
-            "isError": false
-          }
-        ],
-        "tokens": {
-          "prompt": 3430,
-          "completion": 38
-        }
-      },
-      {
-        "turn": 5,
-        "kind": "extract",
-        "ms": 2855,
-        "reasoning": "That's not right - BRIT is likely a Brazilian port. Let me try looking up \"Bento Gonçalves\" since the shipper address mentions BENTO GONCALVES RS, BRAZIL. But wait, the document says PORT OF LOADING is BRIT... Let me try looking up by city name \"Brito\" without country again, or maybe it's a different port code.\n\nActually, looking at the document more carefully - it says \"PORT OF LOAD1NG   BRIT\" - this might be a typo in the document itself. Let me try looking up common Brazilian ports. But actually, I should trust the document and look up BRIT properly.\n\nLet me try without any country filter again.",
-        "toolCalls": [
-          {
-            "name": "lookup_port",
-            "input": {
-              "query": "BRIT"
-            },
-            "output": {
-              "matches": [
-                {
-                  "code": "CABRI",
-                  "name": "Britannia Beach",
-                  "country": "CA"
-                },
-                {
-                  "code": "CABTT",
-                  "name": "Britt",
-                  "country": "CA"
-                },
-                {
-                  "code": "DERIZ",
-                  "name": "Britz",
-                  "country": "DE"
-                },
-                {
-                  "code": "GBBFY",
-                  "name": "Briton Ferry",
-                  "country": "GB"
-                },
-                {
-                  "code": "SIVB9",
-                  "name": "Vremski Britof",
-                  "country": "SI"
-                }
-              ]
-            },
-            "isError": false
-          }
-        ],
-        "tokens": {
-          "prompt": 3523,
-          "completion": 177
-        }
-      },
-      {
-        "turn": 6,
-        "kind": "extract",
-        "ms": 3484,
-        "reasoning": "Hmm, none of these match BRIT. Let me try looking up by city name \"Brito\" or maybe the port is actually in Brazil and I need to look it up differently. Let me try \"Bento Gonçalves\" since that's where the shipper is located.\n\nActually wait - looking at the document again: PORT OF LOADING is BRIT. This might be a typo for a Brazilian port code. Let me try looking up common Brazilian ports like Santos, Rio de Janeiro, etc. But actually, I should trust what's in the document.\n\nLet me try looking up \"Brito\" as a city name without country again, or maybe it's \"Brito\" in Portuguese? Or perhaps BRIT is actually a port code that doesn't exist and I need to interpret it differently.\n\nActually, let me look up \"Bento Gonçalves\" since the shipper is from there.",
-        "toolCalls": [
-          {
-            "name": "lookup_port",
-            "input": {
-              "query": "Bento Gonçalves"
-            },
-            "output": {
-              "matches": [],
-              "hint": "no match; try the city name alone, or drop the country"
-            },
-            "isError": false
-          }
-        ],
-        "tokens": {
-          "prompt": 3801,
-          "completion": 215
-        }
-      },
-      {
-        "turn": 7,
-        "kind": "extract",
-        "ms": 723,
-        "reasoning": "Let me try \"Bento\" alone.",
-        "toolCalls": [
-          {
-            "name": "lookup_port",
-            "input": {
-              "query": "Bento"
-            },
-            "output": {
-              "matches": [
-                {
-                  "code": "USIJM",
-                  "name": "Benton City",
-                  "country": "US"
-                },
-                {
-                  "code": "UYFZB",
-                  "name": "Fray Bentos",
-                  "country": "UY"
-                }
-              ]
-            },
-            "isError": false
-          }
-        ],
-        "tokens": {
-          "prompt": 4051,
-          "completion": 39
-        }
-      },
-      {
-        "turn": 8,
-        "kind": "extract",
-        "ms": 1186,
-        "reasoning": "Still not finding BRIT. Let me try looking up \"Itajai\" since the document mentions \"FREIGHT PREPAID AT ITAJAI\". Itajai is a Brazilian port city.",
-        "toolCalls": [
-          {
-            "name": "lookup_port",
-            "input": {
-              "query": "Itajai"
-            },
-            "output": {
-              "matches": [
-                {
-                  "code": "BRITJ",
-                  "name": "Itajai",
-                  "country": "BR"
-                }
-              ]
-            },
-            "isError": false
-          }
-        ],
-        "tokens": {
-          "prompt": 4143,
-          "completion": 71
-        }
-      },
-      {
-        "turn": 9,
-        "kind": "extract",
-        "ms": 2170,
-        "reasoning": "Interesting! So BRITJ is Itajai, Brazil. But the document says BRIT... Let me check if there's a BRIT port code. Actually, looking at the document again - it says \"PORT OF LOAD1NG   BRIT\" - this might be a typo where \"LOAD1NG\" has a 1 instead of O, and \"BRIT\" might actually be \"BRITJ\" (Itajai).\n\nLet me try looking up BRITJ to confirm.",
-        "toolCalls": [
-          {
-            "name": "lookup_port",
-            "input": {
-              "query": "BRITJ"
-            },
-            "output": {
-              "matches": [
-                {
-                  "code": "BRITJ",
-                  "name": "Itajai",
-                  "country": "BR"
-                }
-              ]
-            },
-            "isError": false
-          }
-        ],
-        "tokens": {
-          "prompt": 4249,
-          "completion": 133
-        }
-      },
-      {
-        "turn": 10,
-        "kind": "extract",
-        "ms": 3214,
-        "reasoning": "Good, so BRITJ is Itajai, Brazil. The document says \"BRIT\" which might be a typo for \"BRITJ\". Let me proceed with BRITJ as the port of loading.\n\nNow let me look up USNYC again to confirm - I already did that and got USNYC = New York, US.\n\nNow let me calculate the conversion:\n- Total: BRL 11,320.00 (European format: 11.320,00 = 11320.00)\n- Need to convert from BRL to USD\n\nLet me do the currency conversion.",
-        "toolCalls": [
-          {
-            "name": "convert_currency",
-            "input": {
-              "amount": 11320,
-              "from": "BRL",
-              "to": "USD"
-            },
-            "output": {
-              "amount": 2037.6,
-              "rate": 0.18,
-              "rateDate": "2026-11-01"
-            },
-            "isError": false
-          }
-        ],
-        "tokens": {
-          "prompt": 4417,
-          "completion": 198
-        }
-      },
-      {
-        "turn": 11,
-        "kind": "extract",
-        "ms": 23991,
-        "reasoning": "Good, so 11320 BRL = 2037.6 USD at the rate of 0.18 (as of 2026-11-01).\n\nNow let me compile all the data:\n\n- documentType: \"bill_of_lading\"\n- shipper: \n  - name: \"MOVEIS SERRA GAUCHA IND. E COM. LTDA\"\n  - address: \"AV. PRES. VARGAS 455, BENTO GONCALVES RS, BRAZIL\"\n  - country: \"BR\"\n- consignee:\n  - name: \"HUDSON HOME FURNISHINGS CORP\"\n  - address: \"220 W 34TH ST, NEW YORK NY 10001, USA\"\n  - country: \"US\"\n- portOfLoading: \n  - code: \"BRITJ\" (Itajai, BR) - I'm assuming the document's \"BRIT\" is a typo for \"BRITJ\"\n  - name: \"Itajai\"\n- portOfDischarge:\n  - code: \"USNYC\"\n  - name: \"New York\"\n- departureDate: \"2026-11-20\" (Shipped on Board 20-NOV-2026)\n- arrivalDate: null (not stated in bill of lading)\n- cargo:\n  - description: \"86 PKGS WOODEN FURNITURE (DINING SETS)\"\n  - packages: 86\n  - grossWeightKg: 11340 (11,340 KGS - European format with comma as decimal separator? Actually looking at it again: \"11 ,340 KGS\" - this looks like 11.340 which in European format would be 11340 kg)\n  - netWeightKg: null (not stated)\n- charges:\n  - [{\"description\": \"Freight Prepaid at Itajai\", \"amount\": 9850, \"currency\": \"BRL\"}]\n  - [{\"description\": \"THC Tax\", \"amount\": 1120, \"currency\": \"BRL\"}]\n  - [{\"description\": \"Bill of Lading Issuance\", \"amount\": 350, \"currency\": \"BRL\"}]\n- total: {\"amount\": 11320, \"currency\": \"BRL\"}\n- totalUsd: 2037.6\n- notes: I need to note that the document uses European number format (comma as decimal separator), and that BRIT appears to be a typo for BRITJ (Itajai)\n\nWait, let me re-read the weight: \"11 ,340 KGS\" - this is unusual formatting. In European format, 11.340 would mean 11340. But there's a space after the comma... Actually looking at it again: \"11 ,340 KGS\" - this might be a typo in the document where they meant \"11.340 KGS\" or \"11,340 KGS\". Given the context of cargo weights, 11340 kg (about 25,000 lbs) for 86 packages seems reasonable for wooden furniture dining sets.\n\nActually wait - let me reconsider. In European format:\n- 9.850,00 = 9850.00\n- 1.120,00 = 1120.00\n- 350,00 = 350.00\n- 11.320,00 = 11320.00\n\nSo the pattern is: number with dot as thousands separator and comma as decimal separator. So \"11 ,340 KGS\" would be... hmm, that's odd. It might actually be \"11.340 KGS\" meaning 11340 kg. Or it could be a typo for \"11,340 KGS\" which in European format would also be 11340 kg.\n\nI'll proceed with 11340 kg as the gross weight.\n\nFor notes, I should mention:\n- European number format used (dot as thousands separator, comma as decimal)\n- BRIT appears to be a typo for BRITJ (Itajai)\n- No net weight stated in document",
-        "toolCalls": [
-          {
-            "name": "submit_extraction",
-            "input": {
-              "documentType": "bill_of_lading",
-              "shipper": {
-                "address": "AV. PRES. VARGAS 455, BENTO GONCALVES RS, BRAZIL",
-                "country": "BR",
-                "name": "MOVEIS SERRA GAUCHA IND. E COM. LTDA"
-              },
-              "consignee": {
-                "address": "220 W 34TH ST, NEW YORK NY 10001, USA",
-                "country": "US",
-                "name": "HUDSON HOME FURNISHINGS CORP"
-              },
-              "portOfLoading": {
-                "code": "BRITJ",
-                "name": "Itajai"
-              },
-              "portOfDischarge": {
-                "code": "USNYC",
-                "name": "New York"
-              },
-              "departureDate": "2026-11-20",
-              "arrivalDate": null,
-              "cargo": {
-                "description": "86 PKGS WOODEN FURNITURE (DINING SETS)",
-                "grossWeightKg": 11340,
-                "netWeightKg": null,
-                "packages": 86
-              },
-              "charges": [
-                {
-                  "amount": 9850,
-                  "currency": "BRL",
-                  "description": "Freight Prepaid at Itajai"
-                },
-                {
-                  "amount": 1120,
-                  "currency": "BRL",
-                  "description": "THC Tax"
-                },
-                {
-                  "amount": 350,
-                  "currency": "BRL",
-                  "description": "Bill of Lading Issuance"
-                }
-              ],
-              "total": {
-                "amount": 11320,
-                "currency": "BRL"
-              },
-              "totalUsd": 2037.6,
-              "notes": [
-                "Document uses European number format (dot as thousands separator, comma as decimal)",
-                "BRIT in document appears to be typo for BRITJ (Itajai)",
-                "No net weight stated in document"
-              ]
-            },
-            "output": {
-              "ok": true
-            },
-            "isError": false
-          }
-        ],
-        "tokens": {
-          "prompt": 4661,
-          "completion": 1499
-        }
-      }
-    ],
-    "totalMs": 51034
-  }
+	"id": "04-ocr-bill-of-lading",
+	"model": "freight-qwen",
+	"recordedAt": "2026-11-26T16:55:42.372Z",
+	"input": "BILL OF LAD1NG                                   B/L No: ALX2611094\nSHIPPER/EXPORTER\nMOVEIS SERRA GAUCHA IND. E COM. LTDA\nAV. PRES. VARGAS 455  BENTO GONCALVES RS  BRAZIL\nCONSIGNEE\nHUDSON HOME FURNISHINGS CORP\n220 W 34TH ST  NEW YORK NY 10001  USA\nNOTIFY PARTY      SAME AS CONSIGNEE\nVESSEL  CAP SAN LORENZO     VOY 644N\nPORT OF LOAD1NG   BRITJ              PORT OF DISCHARGE   USNYC\nSHIPPED ON BOARD  2O-NOV-2026\nMARKS & NOS     DESCRIPTION OF GOODS                      GROSS WT     MEASUREMENT\nHHF/NY 1-86     86 PKGS WOODEN FURNITURE (DINING SETS)    11 ,340 KGS  58.2 CBM\n                SAID TO CONTAIN 1 X 40HC CONT MSKU 778213-4\nFREIGHT PREPAID AT ITAJAI\nFRETE MARITIMO          BRL   9.850,00\nTAXA THC                BRL   1.120,00\nEMISSAO BL              BRL     350,00\nTOTAL                   BRL  11.32O,00\n",
+	"result": {
+		"ok": true,
+		"data": {
+			"documentType": "bill_of_lading",
+			"shipper": {
+				"name": "MOVEIS SERRA GAUCHA IND. E COM. LTDA",
+				"address": "AV. PRES. VARGAS 455, BENTO GONCALVES RS, BRAZIL",
+				"country": "BR"
+			},
+			"consignee": {
+				"name": "HUDSON HOME FURNISHINGS CORP",
+				"address": "220 W 34TH ST, NEW YORK NY 10001, USA",
+				"country": "US"
+			},
+			"portOfLoading": null,
+			"portOfDischarge": {
+				"code": "USNYC",
+				"name": "New York"
+			},
+			"departureDate": "2026-11-20",
+			"arrivalDate": null,
+			"cargo": {
+				"description": "86 PKGS WOODEN FURNITURE (DINING SETS)",
+				"packages": 86,
+				"grossWeightKg": 11340,
+				"netWeightKg": null
+			},
+			"charges": [
+				{
+					"description": "FREIGHT PREPAID AT ITAJAI",
+					"amount": 9850,
+					"currency": "BRL"
+				},
+				{
+					"description": "TAXA THC",
+					"amount": 1120,
+					"currency": "BRL"
+				},
+				{
+					"description": "EMISSAO BL",
+					"amount": 350,
+					"currency": "BRL"
+				}
+			],
+			"total": {
+				"amount": 11320,
+				"currency": "BRL"
+			},
+			"totalUsd": 2037.6,
+			"notes": [
+				"Date format is DD-MM-YYYY (20-NOV-2026 = November 20, 2026)",
+				"European number format used (e.g., 9.850,00 = 9850.00)",
+				"Port of Loading BRIT is an inland place/ICD with no seaport code, so null",
+				"Shipped on board date is the departure date for bill of lading"
+			]
+		},
+		"classification": {
+			"documentType": "bill_of_lading",
+			"language": "Portuguese/English"
+		},
+		"validationFailures": 1,
+		"steps": [
+			{
+				"turn": 1,
+				"kind": "classify",
+				"ms": 873,
+				"text": "{\n  \"documentType\": \"bill_of_lading\",\n  \"language\": \"Portuguese/English\"\n}",
+				"toolCalls": [
+					{
+						"name": "classify",
+						"input": "(document)",
+						"output": {
+							"documentType": "bill_of_lading",
+							"language": "Portuguese/English"
+						},
+						"isError": false
+					}
+				],
+				"tokens": {
+					"prompt": 375,
+					"completion": 28
+				}
+			},
+			{
+				"turn": 2,
+				"kind": "extract",
+				"ms": 14033,
+				"reasoning": "Let me analyze this bill of lading document step by step:\n\n1. **Document Type**: Bill of Lading (confirmed)\n\n2. **Shipper/Exporter**: \n   - Name: MOVEIS SERRA GAUCHA IND. E COM. LTDA\n   - Address: AV. PRES. VARGAS 455, BENTO GONCALVES RS, BRAZIL\n   - Country: BR (Brazil)\n\n3. **Consignee**:\n   - Name: HUDSON HOME FURNISHINGS CORP\n   - Address: 220 W 34TH ST, NEW YORK NY 10001, USA\n   - Country: US (USA)\n\n4. **Ports**:\n   - Port of Loading: BRIT (need to lookup)\n   - Port of Discharge: USNYC (need to lookup)\n\n5. **Dates**:\n   - Shipped on Board: 20-NOV-2026 (this is the departure date for a bill of lading)\n   - No arrival date stated, so null\n\n6. **Cargo**:\n   - Description: 86 PKGS WOODEN FURNITURE (DINING SETS)\n   - Packages: 86\n   - Gross Weight: 11,340 KGS (European format with comma as decimal separator? No, this looks like 11.340 which in European format would be 11,340 = 11340 kg)\n   - Net Weight: Not stated, so null\n\n7. **Charges**:\n   - Freight Prepaid at Itajai: BRL 9,850.00 (European format: 9.850,00 = 9850.00)\n   - THC Tax: BRL 1,120.00 (European format: 1.120,00 = 1120.00)\n   - Bill of Lading Issuance: BRL 350.00 (European format: 350,00 = 350.00)\n   - Total: BRL 11,320.00 (European format: 11.320,00 = 11320.00)\n\n8. **Currency Conversion**: Need to convert total from BRL to USD using convert_currency\n\n9. **Notes**: \n   - Date format appears to be DD-MM-YYYY based on \"20-NOV-2026\"\n   - European number format with comma as decimal separator (e.g., 9.850,00 = 9850.00)\n\nI'll proceed with port lookups and currency conversion to ensure accurate data extraction.",
+				"toolCalls": [
+					{
+						"name": "lookup_port",
+						"input": {
+							"query": "BRIT",
+							"country": "BR"
+						},
+						"output": {
+							"matches": [],
+							"hint": "no seaport matches. Try the city name alone. Inland places (ICDs, inland cities) have no seaport code: use null for that port."
+						},
+						"isError": false
+					},
+					{
+						"name": "lookup_port",
+						"input": {
+							"query": "USNYC",
+							"country": "US"
+						},
+						"output": {
+							"matches": [
+								{
+									"code": "USNYC",
+									"name": "New York",
+									"country": "US"
+								}
+							]
+						},
+						"isError": false
+					}
+				],
+				"tokens": {
+					"prompt": 2590,
+					"completion": 700
+				}
+			},
+			{
+				"turn": 3,
+				"kind": "extract",
+				"ms": 1738,
+				"reasoning": "BRIT didn't match - it's an inland place (ICD). Let me try looking up the city name \"Bento Goncalves\" or just \"Bento\".",
+				"toolCalls": [
+					{
+						"name": "lookup_port",
+						"input": {
+							"query": "Bento Goncalves",
+							"country": "BR"
+						},
+						"output": {
+							"matches": [],
+							"hint": "no seaport matches. Try the city name alone. Inland places (ICDs, inland cities) have no seaport code: use null for that port."
+						},
+						"isError": false
+					}
+				],
+				"tokens": {
+					"prompt": 3371,
+					"completion": 81
+				}
+			},
+			{
+				"turn": 4,
+				"kind": "extract",
+				"ms": 1662,
+				"reasoning": "Let me try just \"Bento\" or look up Santos which is a major port in Brazil near Bento Goncalves. Actually, let me try looking up the city name alone.",
+				"toolCalls": [
+					{
+						"name": "lookup_port",
+						"input": {
+							"query": "Bento",
+							"country": "BR"
+						},
+						"output": {
+							"matches": [],
+							"stop": "3 searches without a match. Stop searching: set the unmatched port to null, mention the place in notes, and call submit_extraction."
+						},
+						"isError": false
+					}
+				],
+				"tokens": {
+					"prompt": 3509,
+					"completion": 79
+				}
+			},
+			{
+				"turn": 5,
+				"kind": "extract",
+				"ms": 2986,
+				"reasoning": "The port BRIT (Bento Goncalves) is an inland place/ICD with no seaport code, so I'll use null for portOfLoading.\n\nNow let me convert the total from BRL to USD. The total is 11,320.00 BRL (European format: 11.320,00 = 11320.00).",
+				"toolCalls": [
+					{
+						"name": "convert_currency",
+						"input": {
+							"amount": 11320,
+							"from": "BRL",
+							"to": "USD"
+						},
+						"output": {
+							"amount": 2037.6,
+							"rate": 0.18,
+							"rateDate": "2026-11-01"
+						},
+						"isError": false
+					}
+				],
+				"tokens": {
+					"prompt": 3637,
+					"completion": 147
+				}
+			},
+			{
+				"turn": 6,
+				"kind": "extract",
+				"ms": 20541,
+				"reasoning": "Now I have all the information needed. Let me compile the extraction:\n\n- documentType: \"bill_of_lading\"\n- shipper: MOVEIS SERRA GAUCHA IND. E COM. LTDA, address: AV. PRES. VARGAS 455, BENTO GONCALVES RS, BRAZIL, country: BR\n- consignee: HUDSON HOME FURNISHINGS CORP, address: 220 W 34TH ST, NEW YORK NY 10001, USA, country: US\n- portOfLoading: null (BRIT is an inland place/ICD with no seaport code)\n- portOfDischarge: USNYC, name: New York\n- departureDate: 2026-11-20 (20-NOV-2026 - DD-MM-YYYY format)\n- arrivalDate: null (not stated in bill of lading)\n- cargo: description: \"86 PKGS WOODEN FURNITURE (DINING SETS)\", packages: 86, grossWeightKg: 11340, netWeightKg: null\n- charges: \n  - {\"description\": \"FREIGHT PREPAID AT ITAJAI\", \"amount\": 9850, \"currency\": \"BRL\"}\n  - {\"description\": \"TAXA THC\", \"amount\": 1120, \"currency\": \"BRL\"}\n  - {\"description\": \"EMISSAO BL\", \"amount\": 350, \"currency\": \"BRL\"}\n- total: {\"amount\": 11320, \"currency\": \"BRL\"}\n- totalUsd: 2037.6\n- notes: \n  - Date format is DD-MM-YYYY (20-NOV-2026 = November 20, 2026)\n  - European number format used (e.g., 9.850,00 = 9850.00)\n  - Port of Loading BRIT is an inland place/ICD with no seaport code, so null\n  - Shipped on board date is the departure date for bill of lading\n\nLet me submit this extraction.",
+				"toolCalls": [
+					{
+						"name": "submit_extraction",
+						"input": {
+							"documentType": "bill_of_lading",
+							"shipper": {
+								"address": "AV. PRES. VARGAS 455, BENTO GONCALVES RS, BRAZIL",
+								"country": "BR",
+								"name": "MOVEIS SERRA GAUCHA IND. E COM. LTDA"
+							},
+							"consignee": {
+								"address": "220 W 34TH ST, NEW YORK NY 10001, USA",
+								"country": "US",
+								"name": "HUDSON HOME FURNISHINGS CORP"
+							},
+							"portOfLoading": null,
+							"portOfDischarge": {
+								"code": "USNYC",
+								"name": "New York"
+							},
+							"departureDate": "2026-11-20",
+							"arrivalDate": null,
+							"cargo": {
+								"description": "86 PKGS WOODEN FURNITURE (DINING SETS)",
+								"grossWeightKg": 11340,
+								"netWeightKg": null,
+								"packages": 86
+							},
+							"charges": [
+								{
+									"amount": 9850,
+									"currency": "BRL",
+									"description": "FREIGHT PREPAID AT ITAJAI"
+								},
+								{
+									"amount": 1120,
+									"currency": "BRL",
+									"description": "TAXA THC"
+								},
+								{
+									"amount": 350,
+									"currency": "BRL",
+									"description": "EMISSAO BL"
+								}
+							],
+							"total": {
+								"amount": 11320,
+								"currency": "BRL"
+							},
+							"totalUsd": 2037.6,
+							"notes": "Date format is DD-MM-YYYY (20-NOV-2026 = November 20, 2026). European number format used (e.g., 9.850,00 = 9850.00). Port of Loading BRIT is an inland place/ICD with no seaport code, so null. Shipped on board date is the departure date for bill of lading."
+						},
+						"output": {
+							"errors": [
+								"notes: Invalid input: expected array, received string (got \"Date format is DD-MM-YYYY (20-NOV-2026 = November 20, 2026). European number fo)"
+							]
+						},
+						"isError": true
+					}
+				],
+				"tokens": {
+					"prompt": 3830,
+					"completion": 1033
+				}
+			},
+			{
+				"turn": 7,
+				"kind": "extract",
+				"ms": 10884,
+				"reasoning": "The notes parameter should be an array of strings, not a single string. Let me fix that.",
+				"toolCalls": [
+					{
+						"name": "submit_extraction",
+						"input": {
+							"documentType": "bill_of_lading",
+							"shipper": {
+								"address": "AV. PRES. VARGAS 455, BENTO GONCALVES RS, BRAZIL",
+								"country": "BR",
+								"name": "MOVEIS SERRA GAUCHA IND. E COM. LTDA"
+							},
+							"consignee": {
+								"address": "220 W 34TH ST, NEW YORK NY 10001, USA",
+								"country": "US",
+								"name": "HUDSON HOME FURNISHINGS CORP"
+							},
+							"portOfLoading": null,
+							"portOfDischarge": {
+								"code": "USNYC",
+								"name": "New York"
+							},
+							"departureDate": "2026-11-20",
+							"arrivalDate": null,
+							"cargo": {
+								"description": "86 PKGS WOODEN FURNITURE (DINING SETS)",
+								"grossWeightKg": 11340,
+								"netWeightKg": null,
+								"packages": 86
+							},
+							"charges": [
+								{
+									"amount": 9850,
+									"currency": "BRL",
+									"description": "FREIGHT PREPAID AT ITAJAI"
+								},
+								{
+									"amount": 1120,
+									"currency": "BRL",
+									"description": "TAXA THC"
+								},
+								{
+									"amount": 350,
+									"currency": "BRL",
+									"description": "EMISSAO BL"
+								}
+							],
+							"total": {
+								"amount": 11320,
+								"currency": "BRL"
+							},
+							"totalUsd": 2037.6,
+							"notes": [
+								"Date format is DD-MM-YYYY (20-NOV-2026 = November 20, 2026)",
+								"European number format used (e.g., 9.850,00 = 9850.00)",
+								"Port of Loading BRIT is an inland place/ICD with no seaport code, so null",
+								"Shipped on board date is the departure date for bill of lading"
+							]
+						},
+						"output": {
+							"ok": true
+						},
+						"isError": false
+					}
+				],
+				"tokens": {
+					"prompt": 4890,
+					"completion": 524
+				}
+			}
+		],
+		"totalMs": 52720
+	}
 }

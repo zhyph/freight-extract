@@ -1,252 +1,252 @@
 {
-  "id": "02-email-thread-hamburg-shanghai",
-  "model": "freight-qwen",
-  "recordedAt": "2026-11-26T16:32:08.442Z",
-  "input": "From: Lena Hoffmann <l.hoffmann@nordlicht-logistik.example>\nSent: Thursday, 6 November 2026 09:14\nTo: wei.zhang@huadong-machinery.example\nSubject: FW: Booking confirmation NLL-BK-77120 / HAM-SHA\n\nHi Wei,\n\nsee below, booking is confirmed at the new rate. Please note cut-off is 12/11.\n\nKind regards\nLena\n\n-----Original Message-----\nFrom: booking@carrier-portal.example\nSent: Wednesday, 5 November 2026 17:40\nSubject: Booking confirmation NLL-BK-77120\n\nBOOKING CONFIRMATION\nBooking no.:      NLL-BK-77120\nShipper:          Praezisionswerk Albrecht GmbH, Industriestr. 14, 70565 Stuttgart, DE\nConsignee:        Shanghai Huadong Machinery Trading Co., Ltd., 1288 Pudong Ave, Shanghai, CN\nPlace of receipt: Stuttgart (truck)\nPOL:              Hamburg, DE\nPOD:              Shanghai, CN\nETD:              14/11/2026\nETA:              02/12/2026  (subject to change)\nEquipment:        2 x 40' HC\nCommodity:        CNC milling machine parts, 18 crates\nGross weight:     31.400 kg\n\nOcean freight     2 x 1.950,00 EUR   =  3.900,00 EUR\nTHC Hamburg       2 x   285,00 EUR   =    570,00 EUR\nISPS                                 =     18,00 EUR\nTotal                                   4.488,00 EUR\n\n-----Original Message-----\nFrom: Lena Hoffmann\nSent: Monday, 27 October 2026 11:02\nSubject: RE: rate request HAM-SHA\n\n> Hi Wei, our quote is 2 x 2.100,00 EUR ocean freight, valid until 31/10/2026.\n> ETD would be 07/11/2026 if you confirm this week.\n",
-  "result": {
-    "ok": true,
-    "data": {
-      "documentType": "booking_confirmation",
-      "shipper": {
-        "name": "Praezisionswerk Albrecht GmbH",
-        "address": "Industriestr. 14, 70565 Stuttgart",
-        "country": "DE"
-      },
-      "consignee": {
-        "name": "Shanghai Huadong Machinery Trading Co., Ltd.",
-        "address": "1288 Pudong Ave, Shanghai",
-        "country": "CN"
-      },
-      "portOfLoading": {
-        "code": "DEHAM",
-        "name": "Hamburg"
-      },
-      "portOfDischarge": {
-        "code": "CNSGH",
-        "name": "Shanghai"
-      },
-      "departureDate": "2026-11-14",
-      "arrivalDate": "2026-12-02",
-      "cargo": {
-        "description": "CNC milling machine parts",
-        "packages": 18,
-        "grossWeightKg": 31400,
-        "netWeightKg": null
-      },
-      "charges": [
-        {
-          "description": "Ocean freight",
-          "amount": 3900,
-          "currency": "EUR"
-        },
-        {
-          "description": "THC Hamburg",
-          "amount": 570,
-          "currency": "EUR"
-        },
-        {
-          "description": "ISPS",
-          "amount": 18,
-          "currency": "EUR"
-        }
-      ],
-      "total": {
-        "amount": 4488,
-        "currency": "EUR"
-      },
-      "totalUsd": 4891.92,
-      "notes": [
-        "Cut-off date 12/11 interpreted as November 12, 2026 (DD/MM/YYYY format) based on European sender context and ETD being November 14"
-      ]
-    },
-    "classification": {
-      "documentType": "booking_confirmation",
-      "language": "en"
-    },
-    "validationFailures": 0,
-    "steps": [
-      {
-        "turn": 1,
-        "kind": "classify",
-        "ms": 569,
-        "text": "{\n  \"documentType\": \"booking_confirmation\",\n  \"language\": \"en\"\n}",
-        "toolCalls": [
-          {
-            "name": "classify",
-            "input": "(document)",
-            "output": {
-              "documentType": "booking_confirmation",
-              "language": "en"
-            },
-            "isError": false
-          }
-        ],
-        "tokens": {
-          "prompt": 555,
-          "completion": 22
-        }
-      },
-      {
-        "turn": 2,
-        "kind": "extract",
-        "ms": 14160,
-        "reasoning": "Let me analyze this document step by step:\n\n1. **Document Type**: This is classified as \"booking_confirmation\" - confirmed in the subject line and content.\n\n2. **Shipper**: Praezisionswerk Albrecht GmbH, Industriestr. 14, 70565 Stuttgart, DE\n   - Name: Praezisionswerk Albrecht GmbH\n   - Address: Industriestr. 14, 70565 Stuttgart\n   - Country: DE (Germany)\n\n3. **Consignee**: Shanghai Huadong Machinery Trading Co., Ltd., 1288 Pudong Ave, Shanghai, CN\n   - Name: Shanghai Huadong Machinery Trading Co., Ltd.\n   - Address: 1288 Pudong Ave, Shanghai\n   - Country: CN (China)\n\n4. **Ports**:\n   - POL (Place of Loading): Hamburg, DE - need to lookup UN/LOCODE\n   - POD (Place of Discharge): Shanghai, CN - need to lookup UN/LOCODE\n\n5. **Dates**:\n   - ETD: 14/11/2026 - This is November 14, 2026 (DD/MM/YYYY format common in Europe)\n   - ETA: 02/12/2026 - December 2, 2026 (DD/MM/YYYY format)\n   \n   Wait, I need to be careful here. The document is from Germany (DE), so DD/MM/YYYY format is likely used. However, the note says \"12/11\" for cut-off date - this could be November 12 or December 11. Given it's a booking confirmation and the ETD is 14/11/2026, the cut-off being 12/11 would make sense as November 12 (before the ETD).\n   \n   Looking at the original message from October 27: \"ETD would be 07/11/2026\" - this is also in DD/MM/YYYY format (November 7, 2026).\n   \n   The dates follow a consistent European format, with day-month-year structure. I'll use November 14 and December 2 as the departure and arrival dates.\n\n6. **Cargo**:\n   - Description: CNC milling machine parts\n   - Packages: 18 crates\n   - Gross Weight: 31.400 kg (European format = 31,400 kg)\n   - Net Weight: Not stated in the document, so null\n\n7. **Charges**:\n   - Ocean freight: 2 x 1.950,00 EUR = 3.900,00 EUR\n   - THC Hamburg: 2 x 285,00 EUR = 570,00 EUR\n   - ISPS: 18,00 EUR\n   - Total: 4.488,00 EUR\n\nI'll convert the total to USD using the currency conversion tool. The document provides a clear total of 4,488.00 EUR, which I'll need to transform into its US dollar equivalent.\n\nThe cut-off date of 12/11 is ambiguous - it could mean November 12 or December 11. Given the context of the booking confirmation and ETD on November 14, I'm leaning towards November 12 as the cut-off date. This interpretation aligns with typical shipping documentation practices where cut-off dates precede departure dates.\n\nI'll proceed with submitting the extraction, noting this assumption in my notes to ensure clarity about the date interpretation.",
-        "toolCalls": [
-          {
-            "name": "lookup_port",
-            "input": {
-              "query": "Hamburg",
-              "country": "DE"
-            },
-            "output": {
-              "matches": [
-                {
-                  "code": "DEHAM",
-                  "name": "Hamburg",
-                  "country": "DE"
-                },
-                {
-                  "code": "DEHTJ",
-                  "name": "Hamburg-Mitte",
-                  "country": "DE"
-                }
-              ]
-            },
-            "isError": false
-          },
-          {
-            "name": "lookup_port",
-            "input": {
-              "query": "Shanghai",
-              "country": "CN"
-            },
-            "output": {
-              "matches": [
-                {
-                  "code": "CNSGH",
-                  "name": "Shanghai",
-                  "country": "CN"
-                },
-                {
-                  "code": "CNSHG",
-                  "name": "Shanghai Pt",
-                  "country": "CN"
-                },
-                {
-                  "code": "CNPDG",
-                  "name": "Pudong/Shanghai",
-                  "country": "CN"
-                }
-              ]
-            },
-            "isError": false
-          }
-        ],
-        "tokens": {
-          "prompt": 2759,
-          "completion": 871
-        }
-      },
-      {
-        "turn": 3,
-        "kind": "extract",
-        "ms": 2370,
-        "reasoning": "Good, I have the port codes:\n- Hamburg, DE: DEHAM\n- Shanghai, CN: CNSGH (I'll use this one as it's the main Shanghai port)\n\nNow let me convert the total from EUR to USD. The total is 4.488,00 EUR which in European format means 4,488.00 EUR = 4488 EUR.",
-        "toolCalls": [
-          {
-            "name": "convert_currency",
-            "input": {
-              "amount": 4488,
-              "from": "EUR",
-              "to": "USD"
-            },
-            "output": {
-              "amount": 4891.92,
-              "rate": 1.09,
-              "rateDate": "2026-11-01"
-            },
-            "isError": false
-          }
-        ],
-        "tokens": {
-          "prompt": 3738,
-          "completion": 143
-        }
-      },
-      {
-        "turn": 4,
-        "kind": "extract",
-        "ms": 16272,
-        "reasoning": "Now I have all the information needed to submit the extraction:\n\n- documentType: \"booking_confirmation\"\n- shipper: {\"name\": \"Praezisionswerk Albrecht GmbH\", \"address\": \"Industriestr. 14, 70565 Stuttgart\", \"country\": \"DE\"}\n- consignee: {\"name\": \"Shanghai Huadong Machinery Trading Co., Ltd.\", \"address\": \"1288 Pudong Ave, Shanghai\", \"country\": \"CN\"}\n- portOfLoading: {\"code\": \"DEHAM\", \"name\": \"Hamburg\"}\n- portOfDischarge: {\"code\": \"CNSGH\", \"name\": \"Shanghai\"}\n- departureDate: \"2026-11-14\" (ETD 14/11/2026 - DD/MM/YYYY format, European sender)\n- arrivalDate: \"2026-12-02\" (ETA 02/12/2026 - DD/MM/YYYY format)\n- cargo: {\"description\": \"CNC milling machine parts\", \"packages\": 18, \"grossWeightKg\": 31400, \"netWeightKg\": null}\n- charges: [{\"description\": \"Ocean freight\", \"amount\": 3900, \"currency\": \"EUR\"}, {\"description\": \"THC Hamburg\", \"amount\": 570, \"currency\": \"EUR\"}, {\"description\": \"ISPS\", \"amount\": 18, \"currency\": \"EUR\"}]\n- total: {\"amount\": 4488, \"currency\": \"EUR\"}\n- totalUsd: 4891.92\n- notes: [\"Cut-off date 12/11 interpreted as November 12, 2026 (DD/MM/YYYY format) based on European sender context and ETD being November 14\"]\n\nWait, I need to reconsider the cut-off date. The note says \"cut-off is 12/11\" - this could be:\n- November 12, 2026 (DD/MM/YYYY = 12/11)\n- December 11, 2026 (MM/DD/YYYY = 12/11)\n\nGiven the sender is from Germany (European format), and ETD is 14/11/2026 (November 14), the cut-off being November 12 makes sense as it's before the departure date. I'll note this assumption.",
-        "toolCalls": [
-          {
-            "name": "submit_extraction",
-            "input": {
-              "documentType": "booking_confirmation",
-              "shipper": {
-                "address": "Industriestr. 14, 70565 Stuttgart",
-                "country": "DE",
-                "name": "Praezisionswerk Albrecht GmbH"
-              },
-              "consignee": {
-                "address": "1288 Pudong Ave, Shanghai",
-                "country": "CN",
-                "name": "Shanghai Huadong Machinery Trading Co., Ltd."
-              },
-              "portOfLoading": {
-                "code": "DEHAM",
-                "name": "Hamburg"
-              },
-              "portOfDischarge": {
-                "code": "CNSGH",
-                "name": "Shanghai"
-              },
-              "departureDate": "2026-11-14",
-              "arrivalDate": "2026-12-02",
-              "cargo": {
-                "description": "CNC milling machine parts",
-                "grossWeightKg": 31400,
-                "netWeightKg": null,
-                "packages": 18
-              },
-              "charges": [
-                {
-                  "amount": 3900,
-                  "currency": "EUR",
-                  "description": "Ocean freight"
-                },
-                {
-                  "amount": 570,
-                  "currency": "EUR",
-                  "description": "THC Hamburg"
-                },
-                {
-                  "amount": 18,
-                  "currency": "EUR",
-                  "description": "ISPS"
-                }
-              ],
-              "total": {
-                "amount": 4488,
-                "currency": "EUR"
-              },
-              "totalUsd": 4891.92,
-              "notes": [
-                "Cut-off date 12/11 interpreted as November 12, 2026 (DD/MM/YYYY format) based on European sender context and ETD being November 14"
-              ]
-            },
-            "output": {
-              "ok": true
-            },
-            "isError": false
-          }
-        ],
-        "tokens": {
-          "prompt": 3928,
-          "completion": 1001
-        }
-      }
-    ],
-    "totalMs": 33376
-  }
+	"id": "02-email-thread-hamburg-shanghai",
+	"model": "freight-qwen",
+	"recordedAt": "2026-11-26T16:53:39.590Z",
+	"input": "From: Lena Hoffmann <l.hoffmann@nordlicht-logistik.example>\nSent: Thursday, 6 November 2026 09:14\nTo: wei.zhang@huadong-machinery.example\nSubject: FW: Booking confirmation NLL-BK-77120 / HAM-SHA\n\nHi Wei,\n\nsee below, booking is confirmed at the new rate. Please note cut-off is 12/11.\n\nKind regards\nLena\n\n-----Original Message-----\nFrom: booking@carrier-portal.example\nSent: Wednesday, 5 November 2026 17:40\nSubject: Booking confirmation NLL-BK-77120\n\nBOOKING CONFIRMATION\nBooking no.:      NLL-BK-77120\nShipper:          Praezisionswerk Albrecht GmbH, Industriestr. 14, 70565 Stuttgart, DE\nConsignee:        Shanghai Huadong Machinery Trading Co., Ltd., 1288 Pudong Ave, Shanghai, CN\nPlace of receipt: Stuttgart (truck)\nPOL:              Hamburg, DE\nPOD:              Shanghai, CN\nETD:              14/11/2026\nETA:              02/12/2026  (subject to change)\nEquipment:        2 x 40' HC\nCommodity:        CNC milling machine parts, 18 crates\nGross weight:     31.400 kg\n\nOcean freight     2 x 1.950,00 EUR   =  3.900,00 EUR\nTHC Hamburg       2 x   285,00 EUR   =    570,00 EUR\nISPS                                 =     18,00 EUR\nTotal                                   4.488,00 EUR\n\n-----Original Message-----\nFrom: Lena Hoffmann\nSent: Monday, 27 October 2026 11:02\nSubject: RE: rate request HAM-SHA\n\n> Hi Wei, our quote is 2 x 2.100,00 EUR ocean freight, valid until 31/10/2026.\n> ETD would be 07/11/2026 if you confirm this week.\n",
+	"result": {
+		"ok": true,
+		"data": {
+			"documentType": "booking_confirmation",
+			"shipper": {
+				"name": "Praezisionswerk Albrecht GmbH",
+				"address": "Industriestr. 14, 70565 Stuttgart",
+				"country": "DE"
+			},
+			"consignee": {
+				"name": "Shanghai Huadong Machinery Trading Co., Ltd.",
+				"address": "1288 Pudong Ave, Shanghai",
+				"country": "CN"
+			},
+			"portOfLoading": {
+				"code": "DEHAM",
+				"name": "Hamburg"
+			},
+			"portOfDischarge": {
+				"code": "CNSGH",
+				"name": "Shanghai"
+			},
+			"departureDate": "2026-11-14",
+			"arrivalDate": "2026-12-02",
+			"cargo": {
+				"description": "CNC milling machine parts",
+				"packages": 18,
+				"grossWeightKg": 31400,
+				"netWeightKg": null
+			},
+			"charges": [
+				{
+					"description": "Ocean freight",
+					"amount": 3900,
+					"currency": "EUR"
+				},
+				{
+					"description": "THC Hamburg",
+					"amount": 570,
+					"currency": "EUR"
+				},
+				{
+					"description": "ISPS",
+					"amount": 18,
+					"currency": "EUR"
+				}
+			],
+			"total": {
+				"amount": 4488,
+				"currency": "EUR"
+			},
+			"totalUsd": 4891.92,
+			"notes": [
+				"Cut-off date 12/11 interpreted as December 11, 2026 (DD/MM/YYYY format based on European context and other dates in document)"
+			]
+		},
+		"classification": {
+			"documentType": "booking_confirmation",
+			"language": "en"
+		},
+		"validationFailures": 0,
+		"steps": [
+			{
+				"turn": 1,
+				"kind": "classify",
+				"ms": 636,
+				"text": "{\n  \"documentType\": \"booking_confirmation\",\n  \"language\": \"en\"\n}",
+				"toolCalls": [
+					{
+						"name": "classify",
+						"input": "(document)",
+						"output": {
+							"documentType": "booking_confirmation",
+							"language": "en"
+						},
+						"isError": false
+					}
+				],
+				"tokens": {
+					"prompt": 555,
+					"completion": 22
+				}
+			},
+			{
+				"turn": 2,
+				"kind": "extract",
+				"ms": 13405,
+				"reasoning": "Let me analyze this document step by step:\n\n1. **Document Type**: This is classified as \"booking_confirmation\" - confirmed in the subject line and content.\n\n2. **Shipper**: Praezisionswerk Albrecht GmbH, Industriestr. 14, 70565 Stuttgart, DE\n   - Name: Praezisionswerk Albrecht GmbH\n   - Address: Industriestr. 14, 70565 Stuttgart\n   - Country: DE (Germany)\n\n3. **Consignee**: Shanghai Huadong Machinery Trading Co., Ltd., 1288 Pudong Ave, Shanghai, CN\n   - Name: Shanghai Huadong Machinery Trading Co., Ltd.\n   - Address: 1288 Pudong Ave, Shanghai\n   - Country: CN (China)\n\n4. **Ports**:\n   - POL (Place of Loading): Hamburg, DE - need to lookup UN/LOCODE\n   - POD (Place of Discharge): Shanghai, CN - need to lookup UN/LOCODE\n\n5. **Dates**:\n   - ETD: 14/11/2026 - This is November 14, 2026 (DD/MM/YYYY format common in Europe)\n   - ETA: 02/12/2026 - December 2, 2026 (DD/MM/YYYY format)\n   \n   Wait, I need to be careful here. The document is from Germany (DE), so DD/MM/YYYY format is likely used. But let me check the context:\n   - The email says \"cut-off is 12/11\" which could mean December 11 or November 12\n   - Looking at the dates in the original message, ETD is 14/11/2026 and ETA is 02/12/2026\n   - If this were MM/DD/YYYY, then 14/11 would be January 14, which doesn't make sense for a November booking\n   - So it's definitely DD/MM/YYYY format (European format)\n   \n   The cut-off date of 12/11 is ambiguous. Given the European context and the other dates using DD/MM/YYYY, I'll interpret this as December 11, 2026.\n\n6. **Cargo**:\n   - Description: CNC milling machine parts\n   - Packages: 18 crates\n   - Gross Weight: 31.400 kg (European format = 31,400 kg)\n   - Net Weight: Not stated in the document, so null\n\n7. **Charges**:\n   - Ocean freight: 2 x 1.950,00 EUR = 3.900,00 EUR\n   - THC Hamburg: 2 x 285,00 EUR = 570,00 EUR\n   - ISPS: 18,00 EUR\n   - Total: 4.488,00 EUR\n\nI'll convert the total to USD using the currency conversion tool. The document provides a clear total of 4.488,00 EUR, which I'll need to transform into its US dollar equivalent.\n\nThe booking confirmation includes specific details about cargo and transportation, with precise weight measurements and multiple charge components. I'll ensure each element is accurately captured in the final submission.",
+				"toolCalls": [
+					{
+						"name": "lookup_port",
+						"input": {
+							"query": "Hamburg",
+							"country": "DE"
+						},
+						"output": {
+							"matches": [
+								{
+									"code": "DEHAM",
+									"name": "Hamburg",
+									"country": "DE"
+								},
+								{
+									"code": "DEHTJ",
+									"name": "Hamburg-Mitte",
+									"country": "DE"
+								}
+							]
+						},
+						"isError": false
+					},
+					{
+						"name": "lookup_port",
+						"input": {
+							"query": "Shanghai",
+							"country": "CN"
+						},
+						"output": {
+							"matches": [
+								{
+									"code": "CNSGH",
+									"name": "Shanghai",
+									"country": "CN"
+								},
+								{
+									"code": "CNSHG",
+									"name": "Shanghai Pt",
+									"country": "CN"
+								},
+								{
+									"code": "CNPDG",
+									"name": "Pudong/Shanghai",
+									"country": "CN"
+								}
+							]
+						},
+						"isError": false
+					}
+				],
+				"tokens": {
+					"prompt": 2759,
+					"completion": 813
+				}
+			},
+			{
+				"turn": 3,
+				"kind": "extract",
+				"ms": 2560,
+				"reasoning": "Good, I have the port codes:\n- Hamburg, DE: DEHAM (I'll use this one as it's the main Hamburg port)\n- Shanghai, CN: CNSGH (this is the standard Shanghai port code)\n\nNow let me convert the total from EUR to USD. The total is 4.488,00 EUR which in European format means 4,488.00 EUR = 4488 EUR.",
+				"toolCalls": [
+					{
+						"name": "convert_currency",
+						"input": {
+							"amount": 4488,
+							"from": "EUR",
+							"to": "USD"
+						},
+						"output": {
+							"amount": 4891.92,
+							"rate": 1.09,
+							"rateDate": "2026-11-01"
+						},
+						"isError": false
+					}
+				],
+				"tokens": {
+					"prompt": 3680,
+					"completion": 152
+				}
+			},
+			{
+				"turn": 4,
+				"kind": "extract",
+				"ms": 17244,
+				"reasoning": "Now I have all the information needed to submit the extraction:\n\n- documentType: \"booking_confirmation\"\n- shipper: {\"name\": \"Praezisionswerk Albrecht GmbH\", \"address\": \"Industriestr. 14, 70565 Stuttgart\", \"country\": \"DE\"}\n- consignee: {\"name\": \"Shanghai Huadong Machinery Trading Co., Ltd.\", \"address\": \"1288 Pudong Ave, Shanghai\", \"country\": \"CN\"}\n- portOfLoading: {\"code\": \"DEHAM\", \"name\": \"Hamburg\"}\n- portOfDischarge: {\"code\": \"CNSGH\", \"name\": \"Shanghai\"}\n- departureDate: \"2026-11-14\" (ETD 14/11/2026 in DD/MM/YYYY format)\n- arrivalDate: \"2026-12-02\" (ETA 02/12/2026 in DD/MM/YYYY format)\n- cargo: {\"description\": \"CNC milling machine parts\", \"packages\": 18, \"grossWeightKg\": 31400, \"netWeightKg\": null}\n- charges: [{\"description\": \"Ocean freight\", \"amount\": 3900, \"currency\": \"EUR\"}, {\"description\": \"THC Hamburg\", \"amount\": 570, \"currency\": \"EUR\"}, {\"description\": \"ISPS\", \"amount\": 18, \"currency\": \"EUR\"}]\n- total: {\"amount\": 4488, \"currency\": \"EUR\"}\n- totalUsd: 4891.92\n- notes: [\"Cut-off date 12/11 interpreted as December 11, 2026 (DD/MM/YYYY format based on European context and other dates in document)\"]\n\nWait, let me reconsider the cut-off date. The email says \"cut-off is 12/11\". In European format this would be December 11, but it could also mean November 12. Given that:\n- ETD is 14/11/2026 (November 14)\n- Cut-off being before ETD makes sense\n\n\n- I'll use December 11 as the cut-off date\n\nI'm uncertain about the net weight, which isn't explicitly stated in the document. The cargo details only provide gross weight information, so I'll leave net weight as null to maintain accuracy.",
+				"toolCalls": [
+					{
+						"name": "submit_extraction",
+						"input": {
+							"documentType": "booking_confirmation",
+							"shipper": {
+								"address": "Industriestr. 14, 70565 Stuttgart",
+								"country": "DE",
+								"name": "Praezisionswerk Albrecht GmbH"
+							},
+							"consignee": {
+								"address": "1288 Pudong Ave, Shanghai",
+								"country": "CN",
+								"name": "Shanghai Huadong Machinery Trading Co., Ltd."
+							},
+							"portOfLoading": {
+								"code": "DEHAM",
+								"name": "Hamburg"
+							},
+							"portOfDischarge": {
+								"code": "CNSGH",
+								"name": "Shanghai"
+							},
+							"departureDate": "2026-11-14",
+							"arrivalDate": "2026-12-02",
+							"cargo": {
+								"description": "CNC milling machine parts",
+								"grossWeightKg": 31400,
+								"netWeightKg": null,
+								"packages": 18
+							},
+							"charges": [
+								{
+									"amount": 3900,
+									"currency": "EUR",
+									"description": "Ocean freight"
+								},
+								{
+									"amount": 570,
+									"currency": "EUR",
+									"description": "THC Hamburg"
+								},
+								{
+									"amount": 18,
+									"currency": "EUR",
+									"description": "ISPS"
+								}
+							],
+							"total": {
+								"amount": 4488,
+								"currency": "EUR"
+							},
+							"totalUsd": 4891.92,
+							"notes": [
+								"Cut-off date 12/11 interpreted as December 11, 2026 (DD/MM/YYYY format based on European context and other dates in document)"
+							]
+						},
+						"output": {
+							"ok": true
+						},
+						"isError": false
+					}
+				],
+				"tokens": {
+					"prompt": 3879,
+					"completion": 989
+				}
+			}
+		],
+		"totalMs": 33849
+	}
 }

@@ -1,0 +1,193 @@
+{
+	"id": "holdout/04-zhangzhou-invoice-scan-xiamen-rotterdam",
+	"model": "freight-qwen",
+	"recordedAt": "2026-11-26T16:47:41.715Z",
+	"input": "|\n\n漳州 市 伟 平 进出 口 贸易 有 限 公 司\nZHANGZHOU WEIPING IMPORT&EXPORT TRADE CO.,LTD\n\nNO.7 ROOM,NO.405 OF THE SOUTH CHANGFU VILLAGE ROAD,JIUHU TOWN,\nZHANGZHOU HIGH-TECH ZONE,FUJIAN,CHINA\n\n商业 发 票\n\nCOMMERCIAL INVOICE\n\nINV. No.\n\nS/C No.\n\nDate\n\nTerms of payment\nTerms of trade\n\nMessrs:\n\nTranspot details; FROM XIAMEN,CHINA TO ROTTERDAM,HOLLAND\n\nMarks Number and Kind of packages ; Description Quantity Unit Price Ext, Price\n& Nos & Specifications (pes.) — (USD/pc.) (USD)\nN/M 1*40RH\n8 WOODEN CASES\nSANSEVIERIA TRIFASCIATA VAR.LAURENTII 57,000 0.241 13,737.000\nTotal:8 WOODEN CASES 57,000 13,737.000\nREMARK\n\nbia ak rE\n",
+	"result": {
+		"ok": true,
+		"data": {
+			"documentType": "invoice",
+			"shipper": {
+				"name": "ZHANGZHOU WEIPING IMPORT&EXPORT TRADE CO.,LTD",
+				"address": "NO.7 ROOM,NO.405 OF THE SOUTH CHANGFU VILLAGE ROAD,JIUHU TOWN,ZHANGZHOU HIGH-TECH ZONE,FUJIAN,CHINA",
+				"country": "CN"
+			},
+			"consignee": null,
+			"portOfLoading": {
+				"code": "CNXAM",
+				"name": "Xiamen"
+			},
+			"portOfDischarge": {
+				"code": "NLRTM",
+				"name": "Rotterdam"
+			},
+			"departureDate": null,
+			"arrivalDate": null,
+			"cargo": {
+				"description": "SANSEVIERIA TRIFASCIATA VAR.LAURENTII",
+				"packages": 8,
+				"grossWeightKg": null,
+				"netWeightKg": null
+			},
+			"charges": [],
+			"total": {
+				"amount": 13737,
+				"currency": "USD"
+			},
+			"totalUsd": 13737,
+			"notes": [
+				"Date field is empty in the document - no departure/arrival dates provided",
+				"No gross/net weight values explicitly stated in the invoice"
+			]
+		},
+		"classification": {
+			"documentType": "invoice",
+			"language": "mixed"
+		},
+		"validationFailures": 0,
+		"steps": [
+			{
+				"turn": 1,
+				"kind": "classify",
+				"ms": 616,
+				"text": "{\n  \"documentType\": \"invoice\",\n  \"language\": \"mixed\"\n}",
+				"toolCalls": [
+					{
+						"name": "classify",
+						"input": "(document)",
+						"output": {
+							"documentType": "invoice",
+							"language": "mixed"
+						},
+						"isError": false
+					}
+				],
+				"tokens": {
+					"prompt": 300,
+					"completion": 21
+				}
+			},
+			{
+				"turn": 2,
+				"kind": "extract",
+				"ms": 9511,
+				"reasoning": "Let me analyze this invoice document step by step:\n\n1. **Shipper**: \n   - Name: ZHANGZHOU WEIPING IMPORT&EXPORT TRADE CO.,LTD\n   - Address: NO.7 ROOM,NO.405 OF THE SOUTH CHANGFU VILLAGE ROAD,JIUHU TOWN,ZHANGZHOU HIGH-TECH ZONE,FUJIAN,CHINA\n   - Country: CN (China)\n\n2. **Consignee**: Not explicitly stated in the document. The \"Messrs:\" appears but no name follows. I'll need to use null for consignee.\n\n3. **Port of Loading**: XIAMEN, CHINA - Need to lookup this port\n4. **Port of Discharge**: ROTTERDAM, HOLLAND - Need to lookup this port\n\n5. **Dates**: The document doesn't have explicit departure/arrival dates. It only has \"Date\" field but no value filled in. I'll need to use null for both dates.\n\n6. **Cargo**:\n   - Description: SANSEVIERIA TRIFASCIATA VAR.LAURENTII (Sansevieria trifasciata var. laurentii - a type of snake plant)\n   - Packages: 8 WOODEN CASES = 8 packages\n   - Gross Weight: Not explicitly stated in kg, but I need to check if there's weight information\n   - Net Weight: Not explicitly stated in kg\n\nWait, looking at the cargo section more carefully:\n- \"N/M 1*40RH\" - This appears to be container info (1 x 40ft RH container)\n- \"8 WOODEN CASES\" - 8 packages\n- Quantity: 57,000 (this seems to be the quantity/number of plants)\n- Unit Price: 0.241 USD/pc\n- Ext. Price: 13,737.000 USD\n\nFor weights, I don't see explicit weight values in kg or tons. \n\nI'll need to investigate the port codes carefully. The document lacks clear date information, which complicates my extraction process. I'll focus on obtaining accurate port details and verifying the cargo specifications.",
+				"toolCalls": [
+					{
+						"name": "lookup_port",
+						"input": {
+							"query": "XIAMEN",
+							"country": "CN"
+						},
+						"output": {
+							"matches": [
+								{
+									"code": "CNXAM",
+									"name": "Xiamen",
+									"country": "CN"
+								},
+								{
+									"code": "CNXMG",
+									"name": "Xiamen Pt",
+									"country": "CN"
+								},
+								{
+									"code": "CNHHT",
+									"name": "Haitian Terminal/ Xiamen",
+									"country": "CN"
+								},
+								{
+									"code": "CNXAN",
+									"name": "Xiang'an, Xiamen",
+									"country": "CN"
+								},
+								{
+									"code": "CNXMH",
+									"name": "Haicang, Xiamen",
+									"country": "CN"
+								}
+							]
+						},
+						"isError": false
+					},
+					{
+						"name": "lookup_port",
+						"input": {
+							"query": "ROTTERDAM",
+							"country": "NL"
+						},
+						"output": {
+							"matches": [
+								{
+									"code": "NLRTM",
+									"name": "Rotterdam",
+									"country": "NL"
+								}
+							]
+						},
+						"isError": false
+					}
+				],
+				"tokens": {
+					"prompt": 2507,
+					"completion": 559
+				}
+			},
+			{
+				"turn": 3,
+				"kind": "extract",
+				"ms": 15073,
+				"reasoning": "Good, I have the port codes:\n- XIAMEN, CHINA → CNXAM (I'll use the main Xiamen code)\n- ROTTERDAM, HOLLAND → NLRTM\n\nNow let me analyze the document more carefully:\n\n1. Shipper: ZHANGZHOU WEIPING IMPORT&EXPORT TRADE CO.,LTD with address in China (CN)\n\n2. Consignee: \"Messrs:\" is listed but no name follows - this appears to be blank/missing\n\n3. Ports: \n   - Port of Loading: XIAMEN, CHINA → CNXAM\n   - Port of Discharge: ROTTERDAM, HOLLAND → NLRTM\n\n4. Dates: The document has \"Date\" field but no value filled in. There's no explicit departure/arrival date. I'll use null for both.\n\n5. Cargo:\n   - Description: SANSEVIERIA TRIFASCIATA VAR.LAURENTII (snake plant)\n   - Packages: 8 WOODEN CASES = 8 packages\n   - Quantity: 57,000 (this is the number of plants/units)\n   - Unit Price: 0.241 USD/pc\n   - Total: 13,737.000 USD\n\n6. For weights: I don't see explicit gross/net weight values in kg or tons. The document doesn't state weight information clearly. I'll need to use null for both since the document doesn't provide them.\n\n7. Charges: No separate charges listed - just the total invoice amount of 13,737.000 USD\n\n8. Total: 13,737.000 USD (already in USD)\n\n9. Notes: I need to note that dates are not provided and weights are not explicitly stated.\n\nLet me submit this extraction.",
+				"toolCalls": [
+					{
+						"name": "submit_extraction",
+						"input": {
+							"documentType": "invoice",
+							"shipper": {
+								"address": "NO.7 ROOM,NO.405 OF THE SOUTH CHANGFU VILLAGE ROAD,JIUHU TOWN,ZHANGZHOU HIGH-TECH ZONE,FUJIAN,CHINA",
+								"country": "CN",
+								"name": "ZHANGZHOU WEIPING IMPORT&EXPORT TRADE CO.,LTD"
+							},
+							"consignee": null,
+							"portOfLoading": {
+								"code": "CNXAM",
+								"name": "Xiamen"
+							},
+							"portOfDischarge": {
+								"code": "NLRTM",
+								"name": "Rotterdam"
+							},
+							"departureDate": null,
+							"arrivalDate": null,
+							"cargo": {
+								"description": "SANSEVIERIA TRIFASCIATA VAR.LAURENTII",
+								"grossWeightKg": null,
+								"netWeightKg": null,
+								"packages": 8
+							},
+							"charges": [],
+							"total": {
+								"amount": 13737,
+								"currency": "USD"
+							},
+							"totalUsd": 13737,
+							"notes": [
+								"Date field is empty in the document - no departure/arrival dates provided",
+								"No gross/net weight values explicitly stated in the invoice"
+							]
+						},
+						"output": {
+							"ok": true
+						},
+						"isError": false
+					}
+				],
+				"tokens": {
+					"prompt": 3203,
+					"completion": 773
+				}
+			}
+		],
+		"totalMs": 25205
+	}
+}

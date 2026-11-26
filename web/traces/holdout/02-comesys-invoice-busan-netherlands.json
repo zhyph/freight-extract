@@ -1,0 +1,210 @@
+{
+	"id": "holdout/02-comesys-invoice-busan-netherlands",
+	"model": "freight-qwen",
+	"recordedAt": "2026-11-26T16:46:39.276Z",
+	"input": "                                                       INVOICE\n          ComeSys Ltd.           KTFA Registration :                 Inv.no & date                    2nd May, 2023\n\n\n\n\n                                                                     BUYER:\n                                                                      Same as Consignee\n\n\n\n\nLeaving : Busan, Korea           Arriving: Netherlands               Supplier code :\nShipdate : 3rd May, 2023         Forwarder:                          Payment terms :\n  HS-Code     Item description & parts no.                                PO no.          Quantity        Unit Cost     Extended Cost\n8708.99.9000 Parts for Electronic control modules comprising of-                          (in pcs)\n\n\n\n\n      1       Accelerator Pedal : T10104690 (FY3-312-4110)              444373841           100            US$80.00       US$8,000.00\n      2       Accelerator Pedal : T10104687 (FZ3-116-4110)              444373841           200            US$76.00      US$15,200.00\n\n\n\n\n             (The exporter of the products coverd by this document (Customs Authorization No. 030-14-200040) declares that,\n                   except where otherwise clearly indicated, these products are of KR preferential origin. Busan, Korea)\n\n\n\n\n              TOTAL : EX-WORK                                                             300 EA                         US$23,200.00\n\n\n\n\n                                                                                     For ComeSys Ltd.\n\n\n\n\n                                                                               Signed by J. H. Lee/President\n\f",
+	"result": {
+		"ok": true,
+		"data": {
+			"documentType": "invoice",
+			"shipper": {
+				"name": "ComeSys Ltd.",
+				"address": null,
+				"country": "KR"
+			},
+			"consignee": null,
+			"portOfLoading": {
+				"code": "KRPUS",
+				"name": "Busan"
+			},
+			"portOfDischarge": null,
+			"departureDate": "2023-05-03",
+			"arrivalDate": null,
+			"cargo": {
+				"description": "Parts for Electronic control modules comprising of-",
+				"packages": 300,
+				"grossWeightKg": null,
+				"netWeightKg": null
+			},
+			"charges": [
+				{
+					"description": "Accelerator Pedal : T10104690 (FY3-312-4110)",
+					"amount": 8000,
+					"currency": "USD"
+				},
+				{
+					"description": "Accelerator Pedal : T10104687 (FZ3-116-4110)",
+					"amount": 15200,
+					"currency": "USD"
+				}
+			],
+			"total": {
+				"amount": 23200,
+				"currency": "USD"
+			},
+			"totalUsd": 23200,
+			"notes": [
+				"Consignee not explicitly stated (document says 'Same as Consignee')",
+				"Arrival date not provided in document",
+				"No weight information found in document",
+				"Port of discharge Netherlands is a country, not a specific port city - using null",
+				"Shipper address not provided in document"
+			]
+		},
+		"classification": {
+			"documentType": "invoice",
+			"language": "en"
+		},
+		"validationFailures": 0,
+		"steps": [
+			{
+				"turn": 1,
+				"kind": "classify",
+				"ms": 613,
+				"text": "{\n  \"documentType\": \"invoice\",\n  \"language\": \"en\"\n}",
+				"toolCalls": [
+					{
+						"name": "classify",
+						"input": "(document)",
+						"output": {
+							"documentType": "invoice",
+							"language": "en"
+						},
+						"isError": false
+					}
+				],
+				"tokens": {
+					"prompt": 405,
+					"completion": 21
+				}
+			},
+			{
+				"turn": 2,
+				"kind": "extract",
+				"ms": 11929,
+				"reasoning": "Let me analyze this invoice document step by step:\n\n1. **Document Type**: Invoice (as stated in the classification)\n\n2. **Shipper**: Not explicitly stated, but it mentions \"ComeSys Ltd.\" as the supplier/exporter. I need to find out where they're from - the document says \"Busan, Korea\" as the leaving port and mentions KR preferential origin, so likely ComeSys Ltd. is in Korea.\n\n3. **Consignee**: Not explicitly stated (says \"Same as Consignee\"), so null\n\n4. **Port of Loading**: Busan, Korea - I need to lookup this port\n5. **Port of Discharge**: Netherlands - I need to lookup this port (but Netherlands is a country, not a city... I'll need to search for it)\n\n6. **Departure Date**: 3rd May, 2023 (Shipdate) - This is clearly MM/DD format with the day being 3\n7. **Arrival Date**: Not explicitly stated, but there's a transit time mentioned? Let me check... Actually, I don't see an explicit arrival date. The document says \"Arriving: Netherlands\" but no specific date. I'll need to check if there's any transit time mentioned... No, I don't see one. So arrivalDate might be null.\n\nWait, let me re-read the rules: \"Sailing or ETD/ETA dates give departure/arrival.\" The shipdate is 3rd May, 2023. There's no ETA mentioned, so arrivalDate would be null.\n\n8. **Cargo**: \n   - Description: Parts for Electronic control modules comprising of-\n   - Packages: 300 EA (EA = each/piece)\n   - Gross Weight: Not explicitly stated in the document\n   - Net Weight: Not explicitly stated in the document\n   \n   Wait, I need to check if there are weights mentioned... Looking at the document again, I don't see any weight information. So these would be null.\n\n9. **Charges**: The document shows extended costs for each item:\n   - Item 1: US$8,000.00\n   - Item 2: US$15,200.00\n   - Total: US$23,200.00\n\nI'll focus on the total charges and currency conversion. The invoice shows a clear total of US$23,200.00 in USD, which means no additional currency conversion is needed for the totalUsd field.\n\n10. **Notes**: I need to document my assumptions about the missing information:\n    - Consignee not explicitly stated (same as shipper)\n    - Arrival date not provided\n    - Weights not provided\n    - Port codes need lookup\n\nI'll proceed with port lookups and prepare the submission, ensuring all fields are accurately captured based on the available document information.",
+				"toolCalls": [
+					{
+						"name": "lookup_port",
+						"input": {
+							"query": "Busan",
+							"country": "KR"
+						},
+						"output": {
+							"matches": [
+								{
+									"code": "KRPUS",
+									"name": "Busan",
+									"country": "KR"
+								},
+								{
+									"code": "KRBJG",
+									"name": "Busanjin-Gu",
+									"country": "KR"
+								},
+								{
+									"code": "KRBNP",
+									"name": "Busan New Port",
+									"country": "KR"
+								},
+								{
+									"code": "KRKCN",
+									"name": "Gamcheon/Busan",
+									"country": "KR"
+								},
+								{
+									"code": "KRSBU",
+									"name": "South Busan",
+									"country": "KR"
+								}
+							]
+						},
+						"isError": false
+					},
+					{
+						"name": "lookup_port",
+						"input": {
+							"query": "Netherlands",
+							"country": "NL"
+						},
+						"output": {
+							"matches": [],
+							"hint": "no seaport matches. Try the city name alone. Inland places (ICDs, inland cities) have no seaport code: use null for that port."
+						},
+						"isError": false
+					}
+				],
+				"tokens": {
+					"prompt": 2612,
+					"completion": 701
+				}
+			},
+			{
+				"turn": 3,
+				"kind": "extract",
+				"ms": 17064,
+				"reasoning": "The Netherlands lookup returned no results because Netherlands is a country, not a city. I need to search without the country parameter or try a different approach. Let me try searching just \"Netherlands\" without country, or perhaps I should look for major Dutch ports like Rotterdam.\n\nActually, looking at the hint, it says \"Try the city name alone. Inland places (ICDs, inland cities) have no seaport code: use null for that port.\"\n\nSince Netherlands is a country and not a specific city/port, and there's no specific discharge port mentioned in the document, I should use null for portOfDischarge.\n\nFor Busan, I'll use KRPUS (Busan) as it's the main port.\n\nNow let me prepare the submission:\n- documentType: \"invoice\"\n- shipper: ComeSys Ltd., address not stated, country KR (Korea based on the document mentioning KR preferential origin and Busan, Korea)\n- consignee: null (not explicitly stated, says \"Same as Consignee\")\n- portOfLoading: KRPUS, Busan\n- portOfDischarge: null (Netherlands is a country, not a specific port city)\n- departureDate: 2023-05-03 (3rd May, 2023)\n- arrivalDate: null (not stated in document)\n- cargo: description \"Parts for Electronic control modules comprising of-\", packages 300, grossWeightKg null, netWeightKg null\n- charges: array with the two items\n- total: US$23,200.00\n- totalUsd: 23200 (since it's already in USD)\n- notes: assumptions about missing information\n\nWait, I need to check the shipper address. The document doesn't explicitly state ComeSys Ltd.'s address. According to the rules, \"Use null for anything the document does not state.\" So shipper.address should be null.\n\nActually, looking at the schema again, shipper requires name, address, and country. But the rule says \"Use null for anything the document does not state.\" This seems contradictory... Let me re-read: \"Use null for anything the document does not state\" - this applies to fields that can be null (like consignee which is anyOf with null option).\n\nFor shipper, it's required to have name, address, and country. But the document doesn't provide an address. I'll need to use what's available: name \"ComeSys Ltd.\", address null, country \"KR\".\n\nActually wait - looking at the schema more carefully, shipper is anyOf with either an object or null. So it can be null if not stated. But the document clearly has ComeSys Ltd. as the supplier/exporter, so I should include it with address as null since it's not provided.\n\nLet me proceed with the submission.",
+				"toolCalls": [
+					{
+						"name": "submit_extraction",
+						"input": {
+							"documentType": "invoice",
+							"shipper": {
+								"address": null,
+								"country": "KR",
+								"name": "ComeSys Ltd."
+							},
+							"consignee": null,
+							"portOfLoading": {
+								"code": "KRPUS",
+								"name": "Busan"
+							},
+							"portOfDischarge": null,
+							"departureDate": "2023-05-03",
+							"arrivalDate": null,
+							"cargo": {
+								"description": "Parts for Electronic control modules comprising of-",
+								"grossWeightKg": null,
+								"netWeightKg": null,
+								"packages": 300
+							},
+							"charges": [
+								{
+									"amount": 8000,
+									"currency": "USD",
+									"description": "Accelerator Pedal : T10104690 (FY3-312-4110)"
+								},
+								{
+									"amount": 15200,
+									"currency": "USD",
+									"description": "Accelerator Pedal : T10104687 (FZ3-116-4110)"
+								}
+							],
+							"total": {
+								"amount": 23200,
+								"currency": "USD"
+							},
+							"totalUsd": 23200,
+							"notes": [
+								"Consignee not explicitly stated (document says 'Same as Consignee')",
+								"Arrival date not provided in document",
+								"No weight information found in document",
+								"Port of discharge Netherlands is a country, not a specific port city - using null",
+								"Shipper address not provided in document"
+							]
+						},
+						"output": {
+							"ok": true
+						},
+						"isError": false
+					}
+				],
+				"tokens": {
+					"prompt": 3463,
+					"completion": 1039
+				}
+			}
+		],
+		"totalMs": 29610
+	}
+}

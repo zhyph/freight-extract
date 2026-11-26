@@ -1,0 +1,171 @@
+{
+	"id": "holdout/01-oocl-delivery-order-ningbo-rotterdam",
+	"model": "freight-qwen",
+	"recordedAt": "2026-11-26T16:46:09.665Z",
+	"input": "                                                                                                                                                            Page 1 of 1\n\n\n\n                                                                                                           PILLLIPANIFLFAPILLLIP      DO ISSUE DATE:\n                                                                                                           OCKKKCOADNCNHAOCKKKCO\n                                                                                                                                      Apr 26 2023\n                                                       DELIVERY ORDER                                      OCMPGMKLFGFKMDIAFNDLK\n                                                                                                           DCKCCCLAPKKDJBEOGOJDA\n                                                                                                           PAOOOAPAGDMMLIAEJFCEA\n                                                                                                                                      BILL OF LADING NO.:\n                                                                                                           IIIIIIIAIAIIAAIIAIAIA      O\n\nAGENT                                                CONSIGNEE                                             NOTIFY PARTY\n                                                                                .V.\n\n\n\n\nVESSEL / VOYAGE                                      PORT OF LOADING           DEPARTURE                   PORT OF DISCHARGE                      ETA\nTHALASSA AVRA 0647-044E                              Ningbo                    Mar 14 2023                 Rotterdam                              Apr 29 2023\nVESSEL CALL SIGN          REGISTRATION NO.           PLACE OF DELIVERY                                     ESTIMATED CARGO ARRIVAL DATE\n9V2232                                               Rotterdam, Zuid-Holland, Netherlands                  May 01 2023\n\n\nPIN\n                                                                  15678334\n\n      *ONE *FIVE *SIX *SEVEN *EIGHT *THREE *THREE *FOUR\n       MARKS                       PACKAGE                         DESCRIPTION OF GOODS                                            WEIGHT        MEASUREMENT\nN/M                       235 Packages                     MESH BAGS                                       16200 KG                              68 CBM\n                                                           FREIGHT PREPAID\n\n\n\n\nCONTAINER NO.             SEAL NO.                 SIZE/TYPE          PIECE COUNT                   TRAFFIC TERMS                           CONTAINER REMARKS\n                                                   40HQ               235 Packages                  FCL / FCL\n\n\n\n\n                                                   TOTAL:             235 Package                                                           16200 KG\nCARGO PICKUP LOCATION                                EMPTY RETURN LOCATION                                 FREE TIME (FROM AVAILIBILITY DATE)\nEuromax Terminal Rotterdam BV                        Euromax Terminal Rotterdam BV                         BEFORE STORAGE*\nMaasvlakte weg 951                                   Maasvlakte weg 951- Havennummer 9830                  5 Calendar Day(s)\n3199 LZ Rotterdam (Maasvlakte)                       Use following reference                               FREE TIME (FOR DEVANNING) BEFORE\nPostbus 7400                                         - TRUCKOOLMT for truck                                DETENTION\n3000 HK Rotterdam                                    - RAILOOLMT for rail                                  7 Calendar Day(s)\nHavennummer 9830                                     - BARGEOOLMT for barge                                REEFER MONITORING FREE TIME\n\nREMARKS\n\n\n\n\nThis \"Delivery Order\" is subject to the terms and conditions of the Original Bill Of Lading; is also subject to the signature and settlement of the general\naverage compromise. The cargo delivered after the free time period will only be released against payment of demurrage according to conference\nand/or port regulations.\n* See Clause 1 on reverse side of OOCL Bill of Lading.\n                                                                  FOR:                                                                             AS CARRIER *\n\f",
+	"result": {
+		"ok": true,
+		"data": {
+			"documentType": "bill_of_lading",
+			"shipper": null,
+			"consignee": null,
+			"portOfLoading": {
+				"code": "CNNBO",
+				"name": "Ningbo"
+			},
+			"portOfDischarge": {
+				"code": "NLRTM",
+				"name": "Rotterdam"
+			},
+			"departureDate": "2023-03-14",
+			"arrivalDate": "2023-04-29",
+			"cargo": {
+				"description": "MESH BAGS",
+				"packages": 235,
+				"grossWeightKg": 16200,
+				"netWeightKg": null
+			},
+			"charges": [],
+			"total": null,
+			"totalUsd": null,
+			"notes": [
+				"Shipper and consignee names not visible in document",
+				"No charges or total amount stated in visible portion",
+				"Net weight not explicitly stated, using null",
+				"Arrival date is ETA (April 29) rather than actual arrival"
+			]
+		},
+		"classification": {
+			"documentType": "bill_of_lading",
+			"language": "en"
+		},
+		"validationFailures": 0,
+		"steps": [
+			{
+				"turn": 1,
+				"kind": "classify",
+				"ms": 902,
+				"text": "{\n  \"documentType\": \"bill_of_lading\",\n  \"language\": \"en\"\n}",
+				"toolCalls": [
+					{
+						"name": "classify",
+						"input": "(document)",
+						"output": {
+							"documentType": "bill_of_lading",
+							"language": "en"
+						},
+						"isError": false
+					}
+				],
+				"tokens": {
+					"prompt": 708,
+					"completion": 24
+				}
+			},
+			{
+				"turn": 2,
+				"kind": "extract",
+				"ms": 11072,
+				"reasoning": "Let me analyze this bill of lading document carefully to extract the required information.\n\nKey fields I need to extract:\n1. documentType: \"bill_of_lading\" (already given)\n2. shipper: Not clearly stated in this document - I need to look for it\n3. consignee: Need to find this\n4. portOfLoading: Ningbo (need to lookup UN/LOCODE)\n5. portOfDischarge: Rotterdam (need to lookup UN/LOCODE)\n6. departureDate: Mar 14 2023 (March 14, 2023)\n7. arrivalDate: Apr 29 2023 (April 29, 2023) - ETA for discharge\n8. cargo: Need to extract description, packages, grossWeightKg, netWeightKg\n9. charges: Need to find freight/premiums\n10. total: Need to find the total amount\n11. totalUsd: Will convert after getting total\n12. notes: Any assumptions made\n\nLet me look at the document more carefully:\n\n- Document Type: Bill of Lading (confirmed)\n- Issue Date: Apr 26 2023\n- Vessel: THALASSA AVRA 0647-044E\n- Port of Loading: Ningbo, Mar 14 2023\n- Port of Discharge: Rotterdam, ETA Apr 29 2023 (but May 01 2023 is listed as ESTIMATED CARGO ARRIVAL DATE)\n- Container: 40HQ\n- Marks: ONE *FIVE *SIX *SEVEN *EIGHT *THREE *THREE *FOUR\n- Packages: 235 Packages\n- Description: MESH BAGS\n- Weight: 16200 KG (gross weight)\n- Measurement: 68 CBM\n\nLooking for shipper and consignee:\n\n\nI notice the document lacks clear identification of the shipper. The consignee appears to be Devann, though the exact name isn't explicitly stated. I'll need to investigate further to confirm the precise details.\n\nThe cargo details are now clearer: 235 mesh bags with a gross weight of 16,200 kg and net weight of 16,200 kg (assuming no packing material). The container is a 40HQ unit, and freight has been prepaid.\n\nI'll proceed with port lookups for Ningbo and Rotterdam to gather additional information about the shipping route.",
+				"toolCalls": [
+					{
+						"name": "lookup_port",
+						"input": {
+							"query": "Ningbo"
+						},
+						"output": {
+							"matches": [
+								{
+									"code": "CNNBO",
+									"name": "Ningbo",
+									"country": "CN"
+								},
+								{
+									"code": "CNNBG",
+									"name": "Ningbo Pt",
+									"country": "CN"
+								}
+							]
+						},
+						"isError": false
+					},
+					{
+						"name": "lookup_port",
+						"input": {
+							"query": "Rotterdam"
+						},
+						"output": {
+							"matches": [
+								{
+									"code": "NLRTM",
+									"name": "Rotterdam",
+									"country": "NL"
+								},
+								{
+									"code": "USRAJ",
+									"name": "Rotterdam",
+									"country": "US"
+								}
+							]
+						},
+						"isError": false
+					}
+				],
+				"tokens": {
+					"prompt": 2923,
+					"completion": 614
+				}
+			},
+			{
+				"turn": 3,
+				"kind": "extract",
+				"ms": 17522,
+				"reasoning": "Good, I have the port codes:\n- Ningbo: CNNBO (or CNNBG) - I'll use CNNBO as it's the main port\n- Rotterdam: NLRTM (NL for Netherlands)\n\nNow let me look at the document more carefully for shipper and consignee information. Looking at the document structure, I don't see clear shipper/consignee names in the visible text. The \"AGENT\" and \"CONSIGNEE\" sections are shown but the actual names aren't clearly filled in.\n\nLooking at the bottom of the document:\n- \"FOR:\" - this is typically where the shipper signs\n- \"AS CARRIER *\" - this is where the carrier signs\n\nI don't see clear shipper or consignee information in this visible portion. Let me check if there's any other indication...\n\nActually, looking at the header with the call sign and registration number (9V2232), this appears to be an OOCL Bill of Lading. The document doesn't clearly show shipper/consignee names in the visible text.\n\nFor the dates:\n- Departure: Mar 14 2023 (March 14, 2023) - this is clear\n- Arrival/ETA: Apr 29 2023 (April 29, 2023) - this is the ETA for discharge\n\nFor cargo:\n- Description: MESH BAGS\n- Packages: 235 Packages\n- Gross Weight: 16200 KG\n- Net Weight: Not explicitly stated, but typically net weight would be close to gross. However, since it's not stated, I should use null for netWeightKg as per the rule \"Use null for anything the document does not state.\"\n\nFor charges and total:\n- \"FREIGHT PREPAID\" is mentioned but no specific amount is shown in the visible text\n- No total amount is visible in this portion of the document\n\nSince there's no clear shipper/consignee information and no charges/total visible, I'll need to use null for those fields.\n\nWait, let me re-read the document more carefully...\n\n\nI see a potential consignee reference with \"FOR:\" but it's incomplete. The document lacks critical details like specific names, addresses, or financial information. Without clear data, I'll proceed with null values for shipper, consignee, and financial fields.\n\nThe cargo details are now clearer: 235 mesh bags with a gross weight of 16,200 kg. However, the net weight remains unspecified, so I'll mark it as null. The document type is confirmed as a bill of lading, with departure on March 14, 2023, and an estimated arrival date of April 29, 2023.\n\nI'm noticing some inconsistencies in the package count - the marks section shows \"ONE *FIVE *SIX *SEVEN *EIGHT *THREE *THREE *FOUR\" which doesn't align with the stated 235 packages. This discrepancy needs careful verification.",
+				"toolCalls": [
+					{
+						"name": "submit_extraction",
+						"input": {
+							"documentType": "bill_of_lading",
+							"shipper": null,
+							"consignee": null,
+							"portOfLoading": {
+								"code": "CNNBO",
+								"name": "Ningbo"
+							},
+							"portOfDischarge": {
+								"code": "NLRTM",
+								"name": "Rotterdam"
+							},
+							"departureDate": "2023-03-14",
+							"arrivalDate": "2023-04-29",
+							"cargo": {
+								"description": "MESH BAGS",
+								"grossWeightKg": 16200,
+								"netWeightKg": null,
+								"packages": 235
+							},
+							"charges": [],
+							"total": null,
+							"totalUsd": null,
+							"notes": [
+								"Shipper and consignee names not visible in document",
+								"No charges or total amount stated in visible portion",
+								"Net weight not explicitly stated, using null",
+								"Arrival date is ETA (April 29) rather than actual arrival"
+							]
+						},
+						"output": {
+							"ok": true
+						},
+						"isError": false
+					}
+				],
+				"tokens": {
+					"prompt": 3626,
+					"completion": 964
+				}
+			}
+		],
+		"totalMs": 29523
+	}
+}

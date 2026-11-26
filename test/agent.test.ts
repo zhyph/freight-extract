@@ -220,4 +220,39 @@ describe("runAgent", () => {
 		expect(result.steps[0]?.toolCalls[0]?.isError).toBe(true);
 		expect(sent[1]?.[0]?.content).not.toMatch(/classified as/);
 	});
+
+	it("tells the model to stop after repeated failed port lookups", async () => {
+		const miss = () => reply(["lookup_port", { query: "Durango" }]);
+		const { complete, sent } = scripted(
+			miss(),
+			miss(),
+			miss(),
+			reply(["submit_extraction", valid]),
+		);
+		const result = await runAgent("doc", complete, { route: false });
+
+		expect(result.ok).toBe(true);
+		const outputs = result.steps.map((s) => s.toolCalls[0]?.output);
+		expect(outputs[1]).not.toHaveProperty("stop");
+		expect(outputs[2]).toHaveProperty(
+			"stop",
+			expect.stringMatching(/^3 searches without a match/),
+		);
+		expect(toolMessages(sent[3])[2].stop).toMatch(
+			/set the unmatched port to null/,
+		);
+	});
+
+	it("echoes the rejected value in validation errors", async () => {
+		const quoted = { ...valid, departureDate: '"2026-10-08"' };
+		const { complete, sent } = scripted(
+			reply(["submit_extraction", quoted]),
+			reply(["submit_extraction", valid]),
+		);
+		await runAgent("doc", complete, { route: false });
+
+		expect(toolMessages(sent[1])[0].errors).toEqual([
+			expect.stringMatching(/^departureDate: .*\(got "\\"2026-10-08\\""\)$/),
+		]);
+	});
 });

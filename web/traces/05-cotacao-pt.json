@@ -1,239 +1,237 @@
 {
-  "id": "05-cotacao-pt",
-  "model": "freight-qwen",
-  "recordedAt": "2026-11-26T16:34:20.330Z",
-  "input": "Assunto: Cotacao frete maritimo PNG x VLC - celulose\n\nBom dia Sr. Martinez,\n\nSegue cotacao conforme solicitado:\n\nEmbarcador: Celulose Campos Gerais S.A., Rod. PR-151 km 8, Ponta Grossa - PR, Brasil\nConsignatario: Papelera Levantina S.L., Poligono Industrial Fuente del Jarro, Paterna, Valencia, Espanha\n\nOrigem: Porto de Paranagua\nDestino: Valencia\nPrevisao de embarque: 05/12/2026\nTransit time estimado: 24 dias\n\nCarga: celulose branqueada em fardos, 400 fardos, 4 x 40' DRY\nPeso bruto total: 100 toneladas\n\nValores:\n- Frete maritimo: EUR 1.150,00 por conteiner x 4 = EUR 4.600,00\n- Taxas de origem (THC + despacho): BRL 3.800,00 (pagas no Brasil)\n- Emissao de BL: EUR 60,00\nTotal frete (EUR): 4.660,00\n\nValidade da cotacao: 15/12/2026.\n\nAtt.,\nRafael Oliveira - Comercial\n",
-  "result": {
-    "ok": true,
-    "data": {
-      "documentType": "quote",
-      "shipper": {
-        "name": "Celulose Campos Gerais S.A.",
-        "address": "Rod. PR-151 km 8, Ponta Grossa - PR",
-        "country": "BR"
-      },
-      "consignee": {
-        "name": "Papelera Levantina S.L.",
-        "address": "Poligono Industrial Fuente del Jarro, Paterna, Valencia",
-        "country": "ES"
-      },
-      "portOfLoading": {
-        "code": "BRPNG",
-        "name": "Paranagua"
-      },
-      "portOfDischarge": {
-        "code": "ESVLC",
-        "name": "Valencia"
-      },
-      "departureDate": "2026-12-05",
-      "arrivalDate": "2027-01-08",
-      "cargo": {
-        "description": "celulose branqueada em fardos",
-        "packages": 400,
-        "grossWeightKg": 100000,
-        "netWeightKg": null
-      },
-      "charges": [
-        {
-          "description": "Frete maritimo",
-          "amount": 4600,
-          "currency": "EUR"
-        },
-        {
-          "description": "Taxas de origem (THC + despacho)",
-          "amount": 3800,
-          "currency": "BRL"
-        },
-        {
-          "description": "Emissao de BL",
-          "amount": 60,
-          "currency": "EUR"
-        }
-      ],
-      "total": {
-        "amount": 4660,
-        "currency": "EUR"
-      },
-      "totalUsd": 5079.4,
-      "notes": [
-        "Date format assumed DD/MM/YYYY based on Brazilian sender context; 05/12/2026 interpreted as December 5, 2026",
-        "Net weight not provided in document"
-      ]
-    },
-    "classification": {
-      "documentType": "quote",
-      "language": "pt-BR"
-    },
-    "validationFailures": 0,
-    "steps": [
-      {
-        "turn": 1,
-        "kind": "classify",
-        "ms": 676,
-        "text": "{\n  \"documentType\": \"quote\",\n  \"language\": \"pt-BR\"\n}",
-        "toolCalls": [
-          {
-            "name": "classify",
-            "input": "(document)",
-            "output": {
-              "documentType": "quote",
-              "language": "pt-BR"
-            },
-            "isError": false
-          }
-        ],
-        "tokens": {
-          "prompt": 337,
-          "completion": 24
-        }
-      },
-      {
-        "turn": 2,
-        "kind": "extract",
-        "ms": 12934,
-        "reasoning": "Let me analyze this freight quote document step by step:\n\n1. **Document Type**: This is classified as \"quote\" according to the user, so I should use the expected sailing date as departure date.\n\n2. **Shipper**: Celulose Campos Gerais S.A., Rod. PR-151 km 8, Ponta Grossa - PR, Brasil\n   - Name: Celulose Campos Gerais S.A.\n   - Address: Rod. PR-151 km 8, Ponta Grossa - PR\n   - Country: BR (Brazil)\n\n3. **Consignee**: Papelera Levantina S.L., Poligono Industrial Fuente del Jarro, Paterna, Valencia, Espanha\n   - Name: Papelera Levantina S.L.\n   - Address: Poligono Industrial Fuente del Jarro, Paterna, Valencia\n   - Country: ES (Spain)\n\n4. **Ports**:\n   - Origin: Porto de Paranagua - Need to lookup this port's UN/LOCODE\n   - Destination: Valencia - Need to lookup this port's UN/LOCODE\n\n5. **Dates**:\n   - Previsão de embarque (Expected sailing date): 05/12/2026\n   - Transit time: 24 days\n   - Validade da cotacao (Quote validity): 15/12/2026\n   \n   The date format is ambiguous - could be DD/MM/YYYY or MM/DD/YYYY. However, since this appears to be a Brazilian document (sender from Brazil), and the context mentions \"Brasil\" explicitly, I should consider that Brazil uses DD/MM/YYYY format. So 05/12/2026 would be December 5th, 2026.\n   \n   Wait, let me reconsider. The user mentioned this is a quote document. In Brazil, the date format is typically DD/MM/YYYY. So:\n   - 05/12/2026 = 05 de Dezembro de 2026 (December 5, 2026)\n   \n   I'll use December 5, 2026 as the departure date since it's a quote document.\n\n6. **Cargo**: \n   - Description: celulose branqueada em fardos (bleached pulp in bales)\n   - Packages: 400 fardos (bales)\n   - Container info: 4 x 40' DRY (4 containers, 40-foot dry)\n   - Gross weight: 100 toneladas = 100,000 kg\n\n7. **Charges**:\n   - Freight: EUR 4,600.00 (EUR 1,150.00 per container x 4 containers)\n   - THC + dispatch fees: BRL 3,800.00 (paid in Brazil)\n   - BL issuance: EUR 60.00\n   - Total freight (EUR): 4,660.00\n\nI'll need to convert the Brazilian Real charges to USD for a complete financial analysis. The total freight is already provided in EUR as 4,660.00.\n\nThe document specifies a departure date of December 5, 2026, with a 24-day transit time. I'll verify the port codes and ensure all details are accurately captured for the quote submission.",
-        "toolCalls": [
-          {
-            "name": "lookup_port",
-            "input": {
-              "query": "Paranagua",
-              "country": "BR"
-            },
-            "output": {
-              "matches": [
-                {
-                  "code": "BRPNG",
-                  "name": "Paranagua",
-                  "country": "BR"
-                }
-              ]
-            },
-            "isError": false
-          },
-          {
-            "name": "lookup_port",
-            "input": {
-              "query": "Valencia",
-              "country": "ES"
-            },
-            "output": {
-              "matches": [
-                {
-                  "code": "ESVLC",
-                  "name": "Valencia",
-                  "country": "ES"
-                }
-              ]
-            },
-            "isError": false
-          }
-        ],
-        "tokens": {
-          "prompt": 2537,
-          "completion": 815
-        }
-      },
-      {
-        "turn": 3,
-        "kind": "extract",
-        "ms": 3610,
-        "reasoning": "Good, I have the port codes:\n- Paranagua: BRPNG\n- Valencia: ESVLC\n\nNow let me convert the BRL charge to USD for the totalUsd field. The total is EUR 4,660.00, but there's also a BRL charge of 3,800.00 that was paid in Brazil. I need to calculate the total in USD.\n\nActually, looking at the schema more carefully:\n- \"total\": the document's stated total, in its own currency - this would be EUR 4,660.00\n- \"totalUsd\": total converted with convert_currency; null if total is null\n\nSo I need to convert EUR 4,660.00 to USD.\n\nLet me do that conversion.",
-        "toolCalls": [
-          {
-            "name": "convert_currency",
-            "input": {
-              "amount": 4660,
-              "from": "EUR",
-              "to": "USD"
-            },
-            "output": {
-              "amount": 5079.4,
-              "rate": 1.09,
-              "rateDate": "2026-11-01"
-            },
-            "isError": false
-          }
-        ],
-        "tokens": {
-          "prompt": 3410,
-          "completion": 226
-        }
-      },
-      {
-        "turn": 4,
-        "kind": "extract",
-        "ms": 18681,
-        "reasoning": "Good, so EUR 4,660.00 converts to USD 5,079.40 at the rate of 1.09 (as of 2026-11-01).\n\nNow let me compile all the data for submit_extraction:\n\n- documentType: \"quote\"\n- shipper: Celulose Campos Gerais S.A., Rod. PR-151 km 8, Ponta Grossa - PR, Brasil → {name: \"Celulose Campos Gerais S.A.\", address: \"Rod. PR-151 km 8, Ponta Grossa - PR\", country: \"BR\"}\n- consignee: Papelera Levantina S.L., Poligono Industrial Fuente del Jarro, Paterna, Valencia, Espanha → {name: \"Papelera Levantina S.L.\", address: \"Poligono Industrial Fuente del Jarro, Paterna, Valencia\", country: \"ES\"}\n- portOfLoading: BRPNG, Paranagua\n- portOfDischarge: ESVLC, Valencia\n- departureDate: 2026-12-05 (05/12/2026 interpreted as DD/MM/YYYY for Brazil)\n- arrivalDate: Need to calculate - departure date + transit time. 2026-12-05 + 24 days = 2027-01-08\n- cargo: {description: \"celulose branqueada em fardos\", packages: 400, grossWeightKg: 100000, netWeightKg: null (not provided)}\n- charges: [\n    {amount: 4600, currency: \"EUR\", description: \"Frete maritimo\"},\n    {amount: 3800, currency: \"BRL\", description: \"Taxas de origem (THC + despacho)\"},\n    {amount: 60, currency: \"EUR\", description: \"Emissao de BL\"}\n  ]\n- total: {amount: 4660, currency: \"EUR\"}\n- totalUsd: 5079.4\n- notes: I should note the date format assumption (DD/MM/YYYY for Brazil) and that netWeightKg is not provided\n\nWait, let me reconsider the dates. The document says:\n- Previsão de embarque: 05/12/2026 - This is expected sailing date, which becomes departureDate\n\n\n- Transit time: 24 dias - I'll add this to calculate arrival date\n- Validade da cotacao: 15/12/2026 - Quote validity period\n\nI'm uncertain about the date format. The Brazilian context suggests DD/MM/YYYY, but I need to verify carefully. The quote's expected sailing date and validity period both use the same ambiguous format, which requires careful interpretation.\n\nThe cargo details are clear: 400 bales of bleached pulp in 40-foot dry containers, with a gross weight of 100,000 kg. Net weight remains unspecified.\n\nI'll proceed with submitting the extraction, noting the date format assumption and missing net weight information.",
-        "toolCalls": [
-          {
-            "name": "submit_extraction",
-            "input": {
-              "documentType": "quote",
-              "shipper": {
-                "address": "Rod. PR-151 km 8, Ponta Grossa - PR",
-                "country": "BR",
-                "name": "Celulose Campos Gerais S.A."
-              },
-              "consignee": {
-                "address": "Poligono Industrial Fuente del Jarro, Paterna, Valencia",
-                "country": "ES",
-                "name": "Papelera Levantina S.L."
-              },
-              "portOfLoading": {
-                "code": "BRPNG",
-                "name": "Paranagua"
-              },
-              "portOfDischarge": {
-                "code": "ESVLC",
-                "name": "Valencia"
-              },
-              "departureDate": "2026-12-05",
-              "arrivalDate": "2027-01-08",
-              "cargo": {
-                "description": "celulose branqueada em fardos",
-                "grossWeightKg": 100000,
-                "netWeightKg": null,
-                "packages": 400
-              },
-              "charges": [
-                {
-                  "amount": 4600,
-                  "currency": "EUR",
-                  "description": "Frete maritimo"
-                },
-                {
-                  "amount": 3800,
-                  "currency": "BRL",
-                  "description": "Taxas de origem (THC + despacho)"
-                },
-                {
-                  "amount": 60,
-                  "currency": "EUR",
-                  "description": "Emissao de BL"
-                }
-              ],
-              "total": {
-                "amount": 4660,
-                "currency": "EUR"
-              },
-              "totalUsd": 5079.4,
-              "notes": [
-                "Date format assumed DD/MM/YYYY based on Brazilian sender context; 05/12/2026 interpreted as December 5, 2026",
-                "Net weight not provided in document"
-              ]
-            },
-            "output": {
-              "ok": true
-            },
-            "isError": false
-          }
-        ],
-        "tokens": {
-          "prompt": 3682,
-          "completion": 1163
-        }
-      }
-    ],
-    "totalMs": 35903
-  }
+	"id": "05-cotacao-pt",
+	"model": "freight-qwen",
+	"recordedAt": "2026-11-26T16:56:23.345Z",
+	"input": "Assunto: Cotacao frete maritimo PNG x VLC - celulose\n\nBom dia Sr. Martinez,\n\nSegue cotacao conforme solicitado:\n\nEmbarcador: Celulose Campos Gerais S.A., Rod. PR-151 km 8, Ponta Grossa - PR, Brasil\nConsignatario: Papelera Levantina S.L., Poligono Industrial Fuente del Jarro, Paterna, Valencia, Espanha\n\nOrigem: Porto de Paranagua\nDestino: Valencia\nPrevisao de embarque: 05/12/2026\nTransit time estimado: 24 dias\n\nCarga: celulose branqueada em fardos, 400 fardos, 4 x 40' DRY\nPeso bruto total: 100 toneladas\n\nValores:\n- Frete maritimo: EUR 1.150,00 por conteiner x 4 = EUR 4.600,00\n- Taxas de origem (THC + despacho): BRL 3.800,00 (pagas no Brasil)\n- Emissao de BL: EUR 60,00\nTotal frete (EUR): 4.660,00\n\nValidade da cotacao: 15/12/2026.\n\nAtt.,\nRafael Oliveira - Comercial\n",
+	"result": {
+		"ok": true,
+		"data": {
+			"documentType": "quote",
+			"shipper": {
+				"name": "Celulose Campos Gerais S.A.",
+				"address": "Rod. PR-151 km 8, Ponta Grossa - PR",
+				"country": "BR"
+			},
+			"consignee": {
+				"name": "Papelera Levantina S.L.",
+				"address": "Poligono Industrial Fuente del Jarro, Paterna, Valencia",
+				"country": "ES"
+			},
+			"portOfLoading": {
+				"code": "BRPNG",
+				"name": "Paranagua"
+			},
+			"portOfDischarge": {
+				"code": "ESVLC",
+				"name": "Valencia"
+			},
+			"departureDate": "2026-12-05",
+			"arrivalDate": "2027-01-08",
+			"cargo": {
+				"description": "celulose branqueada em fardos",
+				"packages": 400,
+				"grossWeightKg": 100000,
+				"netWeightKg": null
+			},
+			"charges": [
+				{
+					"description": "Frete maritimo",
+					"amount": 4600,
+					"currency": "EUR"
+				},
+				{
+					"description": "Taxas de origem (THC + despacho)",
+					"amount": 3800,
+					"currency": "BRL"
+				},
+				{
+					"description": "Emissao de BL",
+					"amount": 60,
+					"currency": "EUR"
+				}
+			],
+			"total": {
+				"amount": 4660,
+				"currency": "EUR"
+			},
+			"totalUsd": 5079.4,
+			"notes": [
+				"Date format assumed DD/MM/YYYY based on Brazilian sender (Celulose Campos Gerais S.A., Brasil)"
+			]
+		},
+		"classification": {
+			"documentType": "quote",
+			"language": "pt-BR"
+		},
+		"validationFailures": 0,
+		"steps": [
+			{
+				"turn": 1,
+				"kind": "classify",
+				"ms": 791,
+				"text": "{\n  \"documentType\": \"quote\",\n  \"language\": \"pt-BR\"\n}",
+				"toolCalls": [
+					{
+						"name": "classify",
+						"input": "(document)",
+						"output": {
+							"documentType": "quote",
+							"language": "pt-BR"
+						},
+						"isError": false
+					}
+				],
+				"tokens": {
+					"prompt": 337,
+					"completion": 24
+				}
+			},
+			{
+				"turn": 2,
+				"kind": "extract",
+				"ms": 17782,
+				"reasoning": "Let me analyze this freight quote document step by step:\n\n1. **Document Type**: This is classified as \"quote\" according to the user, so I'll use the expected sailing date as departure date.\n\n2. **Shipper**: Celulose Campos Gerais S.A., Rod. PR-151 km 8, Ponta Grossa - PR, Brasil\n   - Name: Celulose Campos Gerais S.A.\n   - Address: Rod. PR-151 km 8, Ponta Grossa - PR, Brasil\n   - Country: BR (Brazil)\n\n3. **Consignee**: Papelera Levantina S.L., Poligono Industrial Fuente del Jarro, Paterna, Valencia, Espanha\n   - Name: Papelera Levantina S.L.\n   - Address: Poligono Industrial Fuente del Jarro, Paterna, Valencia, Espanha\n   - Country: ES (Spain)\n\n4. **Ports**:\n   - Origin: Porto de Paranagua - Need to lookup this port's UN/LOCODE\n   - Destination: Valencia - Need to lookup this port's UN/LOCODE\n\n5. **Dates**:\n   - Previsão de embarque (Expected sailing date): 05/12/2026\n   - Transit time: 24 days\n   - Validade da cotacao (Quote validity): 15/12/2026\n   \n   The date format is ambiguous - could be DD/MM/YYYY or MM/DD/YYYY. However, since this appears to be a Brazilian document (sender from Brazil), and the context mentions \"Brasil\" explicitly, I should consider that Brazil uses DD/MM/YYYY format. So 05/12/2026 would be December 5th, 2026 in DD/MM/YYYY format.\n   \n   Wait, let me reconsider. The document is from Rafael Oliveira - Comercial, and the shipper is Brazilian (Celulose Campos Gerais S.A., Brasil). Brazil uses DD/MM/YYYY format. So:\n   - 05/12/2026 = December 5th, 2026 (DD/MM/YYYY)\n   \n   I'll verify the date interpretation carefully. The quote's expected sailing date is December 5th, 2026, with a 24-day transit time. This means the departure date aligns with the Brazilian date format.\n\n6. **Cargo**: \n   - Description: celulose branqueada em fardos (bleached pulp in bales)\n   - Packages: 400 fardos (bales)\n   - Container info: 4 x 40' DRY\n   - Gross weight: 100 toneladas = 100,000 kg\n\n7. **Charges**:\n   - Freight: EUR 4,600.00 (EUR 1,150.00 per container × 4 containers)\n   - THC + dispatch fees: BRL 3,800.00 (paid in Brazil)\n   - BL issuance: EUR 60.00\n   - Total freight (EUR): 4,660.00\n\nI'll need to convert the Brazilian charges to USD and ensure all financial details are accurately captured for the quote submission. I'm tracking the cargo details carefully. The document specifies 400 bales of bleached pulp in 4 x 40' DRY containers, with a gross weight of 100,000 kg. However, there's no net weight information provided, which means I'll need to mark it as null during the submission process.\n\nThe cargo description requires precise translation: \"celulose branqueada em fardos\" translates to bleached pulp in bales, a critical detail for accurate documentation.",
+				"toolCalls": [
+					{
+						"name": "lookup_port",
+						"input": {
+							"query": "Paranagua",
+							"country": "BR"
+						},
+						"output": {
+							"matches": [
+								{
+									"code": "BRPNG",
+									"name": "Paranagua",
+									"country": "BR"
+								}
+							]
+						},
+						"isError": false
+					},
+					{
+						"name": "lookup_port",
+						"input": {
+							"query": "Valencia",
+							"country": "ES"
+						},
+						"output": {
+							"matches": [
+								{
+									"code": "ESVLC",
+									"name": "Valencia",
+									"country": "ES"
+								}
+							]
+						},
+						"isError": false
+					}
+				],
+				"tokens": {
+					"prompt": 2537,
+					"completion": 895
+				}
+			},
+			{
+				"turn": 3,
+				"kind": "extract",
+				"ms": 4331,
+				"reasoning": "Good, I have the port codes:\n- Paranagua: BRPNG\n- Valencia: ESVLC\n\nNow let me convert the BRL charge to USD for totalUsd calculation. The total is EUR 4,660.00, but there's also a BRL charge of 3,800.00 that needs to be converted.\n\nActually, looking at the schema again:\n- total: the document's stated total, in its own currency (EUR 4,660.00)\n- totalUsd: total converted with convert_currency; null if total is null\n\nSo I need to convert EUR 4,660.00 to USD.\n\nLet me do that conversion now.",
+				"toolCalls": [
+					{
+						"name": "convert_currency",
+						"input": {
+							"amount": 4660,
+							"from": "EUR",
+							"to": "USD"
+						},
+						"output": {
+							"amount": 5079.4,
+							"rate": 1.09,
+							"rateDate": "2026-11-01"
+						},
+						"isError": false
+					}
+				],
+				"tokens": {
+					"prompt": 3490,
+					"completion": 212
+				}
+			},
+			{
+				"turn": 4,
+				"kind": "extract",
+				"ms": 18067,
+				"reasoning": "Good, so EUR 4,660.00 converts to USD 5,079.40 at the rate of 1.09 (as of 2026-11-01).\n\nNow let me compile all the data for submit_extraction:\n\n- documentType: \"quote\"\n- shipper: Celulose Campos Gerais S.A., Rod. PR-151 km 8, Ponta Grossa - PR, Brasil, BR\n- consignee: Papelera Levantina S.L., Poligono Industrial Fuente del Jarro, Paterna, Valencia, Espanha, ES\n- portOfLoading: BRPNG, Paranagua\n- portOfDischarge: ESVLC, Valencia\n- departureDate: 2026-12-05 (05/12/2026 interpreted as DD/MM/YYYY since Brazil uses this format)\n- arrivalDate: Need to calculate - departure date + transit time. 2026-12-05 + 24 days = 2027-01-08\n- cargo: \n  - description: \"celulose branqueada em fardos\" (bleached pulp in bales)\n  - packages: 400\n  - grossWeightKg: 100000 (100 toneladas = 100,000 kg)\n  - netWeightKg: null (not provided)\n- charges: \n  - {\"description\": \"Frete maritimo\", \"amount\": 4600, \"currency\": \"EUR\"}\n  - {\"description\": \"Taxas de origem (THC + despacho)\", \"amount\": 3800, \"currency\": \"BRL\"}\n  - {\"description\": \"Emissao de BL\", \"amount\": 60, \"currency\": \"EUR\"}\n- total: {\"amount\": 4660, \"currency\": \"EUR\"}\n- totalUsd: 5079.4\n- notes: I should note the date format assumption (DD/MM/YYYY for Brazil)\n\nWait, let me reconsider the dates again. The document says \"Previsão de embarque: 05/12/2026\" and \"Transit time estimado: 24 dias\". \n\nI'm uncertain about the date interpretation. While Brazil typically uses DD/MM/YYYY, the quote's expected sailing date could be ambiguous. The transit time of 24 days suggests a specific departure date, but I need to verify the exact format carefully.\n\nThe key challenge is determining whether 05/12/2026 represents December 5th or May 12th, 2026. This distinction could significantly impact the arrival date calculation and overall logistics planning.",
+				"toolCalls": [
+					{
+						"name": "submit_extraction",
+						"input": {
+							"documentType": "quote",
+							"shipper": {
+								"address": "Rod. PR-151 km 8, Ponta Grossa - PR",
+								"country": "BR",
+								"name": "Celulose Campos Gerais S.A."
+							},
+							"consignee": {
+								"address": "Poligono Industrial Fuente del Jarro, Paterna, Valencia",
+								"country": "ES",
+								"name": "Papelera Levantina S.L."
+							},
+							"portOfLoading": {
+								"code": "BRPNG",
+								"name": "Paranagua"
+							},
+							"portOfDischarge": {
+								"code": "ESVLC",
+								"name": "Valencia"
+							},
+							"departureDate": "2026-12-05",
+							"arrivalDate": "2027-01-08",
+							"cargo": {
+								"description": "celulose branqueada em fardos",
+								"grossWeightKg": 100000,
+								"netWeightKg": null,
+								"packages": 400
+							},
+							"charges": [
+								{
+									"amount": 4600,
+									"currency": "EUR",
+									"description": "Frete maritimo"
+								},
+								{
+									"amount": 3800,
+									"currency": "BRL",
+									"description": "Taxas de origem (THC + despacho)"
+								},
+								{
+									"amount": 60,
+									"currency": "EUR",
+									"description": "Emissao de BL"
+								}
+							],
+							"total": {
+								"amount": 4660,
+								"currency": "EUR"
+							},
+							"totalUsd": 5079.4,
+							"notes": [
+								"Date format assumed DD/MM/YYYY based on Brazilian sender (Celulose Campos Gerais S.A., Brasil)"
+							]
+						},
+						"output": {
+							"ok": true
+						},
+						"isError": false
+					}
+				],
+				"tokens": {
+					"prompt": 3748,
+					"completion": 1056
+				}
+			}
+		],
+		"totalMs": 40972
+	}
 }
